@@ -50,8 +50,12 @@ export default async function ReceiptPage({ params }: ReceiptPageProps) {
         <div className="bg-white rounded-3xl p-8 md:p-12 border border-[#e9e1d4] shadow-dhaba print:border-none print:shadow-none print:p-4 text-[#172b3a]">
           {/* Header */}
           <div className="text-center pb-6 border-b border-[#e9e1d4]">
-            <div className="w-14 h-14 rounded-2xl bg-[#102a43] text-white flex items-center justify-center font-black text-xl border-2 border-[#d99a2b] mx-auto mb-2">
-              PJ
+            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#d99a2b] mx-auto mb-2 bg-white">
+              <img
+                src="/images/logo.png"
+                alt="Pandit Ji Ka Dhaba"
+                className="w-full h-full object-cover"
+              />
             </div>
             <h1 className="font-serif-dhaba font-bold text-3xl text-[#102a43]">
               {settings.restaurantName}

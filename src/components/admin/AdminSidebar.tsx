@@ -46,8 +46,12 @@ export function AdminSidebar() {
         {/* Brand header */}
         <div className="p-6 border-b border-[#183b5b]">
           <Link href="/admin" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#091d2d] text-white flex items-center justify-center font-black text-sm border-2 border-[#d99a2b] shadow-brand">
-              PJ
+            <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-[#d99a2b] shadow-brand flex-shrink-0 bg-white">
+              <img
+                src="/images/logo.png"
+                alt="Pandit Ji Admin"
+                className="w-full h-full object-cover"
+              />
             </div>
             <div>
               <span className="font-serif-dhaba font-bold text-lg text-white block leading-none">

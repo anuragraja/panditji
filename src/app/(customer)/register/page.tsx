@@ -52,8 +52,12 @@ export default function RegisterPage() {
       <div className="container-dhaba max-w-md">
         <div className="bg-white rounded-3xl p-8 border border-[#e9e1d4] shadow-dhaba">
           <div className="text-center mb-6">
-            <div className="w-12 h-12 rounded-xl bg-[#102a43] text-white flex items-center justify-center font-black text-lg border-2 border-[#d99a2b] mx-auto mb-3">
-              PJ
+            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#d99a2b] mx-auto mb-3 shadow-brand bg-white">
+              <img
+                src="/images/logo.png"
+                alt="Pandit Ji Ka Dhaba"
+                className="w-full h-full object-cover"
+              />
             </div>
             <h1 className="font-serif-dhaba font-bold text-2xl text-[#102a43]">
               Create Your Account

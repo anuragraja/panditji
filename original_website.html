@@ -79,17 +79,22 @@
     }
 
     .logo {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-      background: var(--navy);
-      color: #fff;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #fff;
       display: grid;
       place-items: center;
-      font-weight: 900;
-      font-size: 16px;
       border: 2px solid var(--gold);
-      box-shadow: 0 7px 18px rgba(16, 42, 67, .16)
+      box-shadow: 0 7px 18px rgba(16, 42, 67, .16);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .brand-name {
@@ -1005,7 +1010,7 @@
   <header class="header">
     <div class="container nav">
       <a class="brand" href="#home">
-        <span class="logo">PJ</span>
+        <span class="logo"><img src="/images/logo.png" alt="Pandit Ji Ka Dhaba" /></span>
         <span><span class="brand-name">Pandit Ji</span><span class="brand-sub">KA DHABA</span></span>
       </a>
       <button class="menu-toggle" onclick="toggleNav()">☰</button>
@@ -1187,7 +1192,7 @@
 
   <footer>
     <div class="container footer">
-      <a class="brand" href="#home"><span class="logo">PJ</span><span><span class="brand-name">Pandit Ji</span><span
+      <a class="brand" href="#home"><span class="logo"><img src="/images/logo.png" alt="Pandit Ji Ka Dhaba" /></span><span><span class="brand-name">Pandit Ji</span><span
             class="brand-sub">KA DHABA</span></span></a>
       <p>Authentic Indian flavours. Fresh food. Warm hospitality.</p>
       <div class="footer-links">Home • Menu • Contact</div>
