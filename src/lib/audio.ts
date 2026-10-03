@@ -6,11 +6,22 @@ class OrderAudioAlert {
   private isMuted: boolean = false;
   private isAlarmPlaying: boolean = false;
   private repeatTimer: NodeJS.Timeout | null = null;
+  private burstTimers: NodeJS.Timeout[] = [];
 
   constructor() {
     if (typeof window !== "undefined") {
       const storedMute = localStorage.getItem("pj_admin_sound_muted");
       this.isMuted = storedMute === "true";
+
+      // Unlock AudioContext on first user interaction if suspended
+      const unlockAudio = () => {
+        if (this.ctx && this.ctx.state === "suspended") {
+          this.ctx.resume().catch(() => {});
+        }
+      };
+      window.addEventListener("click", unlockAudio, { passive: true });
+      window.addEventListener("touchstart", unlockAudio, { passive: true });
+      window.addEventListener("keydown", unlockAudio, { passive: true });
     }
   }
 
@@ -25,7 +36,7 @@ class OrderAudioAlert {
       }
     }
     if (this.ctx && this.ctx.state === "suspended") {
-      this.ctx.resume();
+      this.ctx.resume().catch(() => {});
     }
   }
 
@@ -38,6 +49,9 @@ class OrderAudioAlert {
     if (typeof window !== "undefined") {
       localStorage.setItem("pj_admin_sound_muted", String(muted));
     }
+    if (muted) {
+      this.stopAlarm();
+    }
   }
 
   public toggleMute(): boolean {
@@ -46,6 +60,52 @@ class OrderAudioAlert {
       this.playOrderChime();
     }
     return this.isMuted;
+  }
+
+  public isAlarmRunning(): boolean {
+    return this.isAlarmPlaying;
+  }
+
+  // Starts recurring kitchen alarm bell chime every 4 seconds until stopAlarm() is called
+  public startAlarm() {
+    if (this.isMuted) return;
+
+    this.stopAlarm(); // clear any previous interval and bursts
+    this.isAlarmPlaying = true;
+
+    // Play first burst immediately
+    this.playOrderChime();
+
+    // Repeat alarm every 4 seconds until confirmed / stopped
+    this.repeatTimer = setInterval(() => {
+      if (!this.isAlarmPlaying || this.isMuted) {
+        this.stopAlarm();
+        return;
+      }
+      this.playOrderChime();
+    }, 4200);
+  }
+
+  // Stops the alarm immediately and cancels scheduled burst timers and vibration
+  public stopAlarm() {
+    if (this.repeatTimer) {
+      clearInterval(this.repeatTimer);
+      this.repeatTimer = null;
+    }
+
+    // Cancel all scheduled burst timeouts in the current sequence
+    this.burstTimers.forEach((timer) => clearTimeout(timer));
+    this.burstTimers = [];
+
+    this.isAlarmPlaying = false;
+
+    if (typeof navigator !== "undefined" && navigator.vibrate) {
+      try {
+        navigator.vibrate(0); // stop vibration immediately
+      } catch {
+        // ignore
+      }
+    }
   }
 
   // Strong, loud 3-burst restaurant kitchen alarm bell
@@ -73,7 +133,7 @@ class OrderAudioAlert {
       ];
 
       bursts.forEach((burstOffset) => {
-        setTimeout(() => {
+        const timerId = setTimeout(() => {
           if (!this.ctx || this.isMuted) return;
           const now = this.ctx.currentTime;
 
@@ -114,18 +174,12 @@ class OrderAudioAlert {
             osc2.stop(now + time + duration + 0.05);
           });
         }, burstOffset * 1000);
+
+        this.burstTimers.push(timerId);
       });
     } catch (e) {
       console.warn("Kitchen chime playback error:", e);
     }
-  }
-
-  public stopAlarm() {
-    if (this.repeatTimer) {
-      clearInterval(this.repeatTimer);
-      this.repeatTimer = null;
-    }
-    this.isAlarmPlaying = false;
   }
 }
 

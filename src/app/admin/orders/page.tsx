@@ -6,6 +6,7 @@ import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { IOrder, OrderStatus, IRestaurantSettings } from "@/types";
 import { buildAdminStatusMessage, buildWhatsAppUrl } from "@/lib/whatsapp/message-builder";
 import { useToast } from "@/context/ToastContext";
+import { orderAlert } from "@/lib/audio";
 import {
   Search,
   Filter,
@@ -67,6 +68,17 @@ export default function AdminOrdersPage() {
 
   const handleUpdateStatus = async (orderId: string, newStatus: OrderStatus) => {
     setUpdatingStatus(true);
+
+    // If confirming or processing order, turn sound off immediately
+    if (newStatus === "CONFIRMED" || newStatus === "PREPARING" || newStatus === "CANCELLED") {
+      orderAlert.stopAlarm();
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("pj_order_confirmed", { detail: { orderId } })
+        );
+      }
+    }
+
     try {
       const res = await fetch(`/api/orders/${orderId}`, {
         method: "PATCH",
