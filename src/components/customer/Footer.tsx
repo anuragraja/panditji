@@ -6,11 +6,11 @@ export function Footer() {
     <footer className="bg-[#091d2d] text-[#c4d0d7]">
       <div className="container-dhaba py-[30px] flex justify-between items-center gap-5 max-md:grid">
         <Link href="/" className="flex items-center gap-3 text-white">
-          <div className="w-[48px] h-[48px] rounded-full overflow-hidden border-2 border-[#d99a2b] shadow-brand flex-shrink-0 bg-white">
+          <div className="w-[52px] h-[52px] rounded-full overflow-hidden border-2 border-[#d99a2b] shadow-brand flex-shrink-0 bg-white">
             <img
               src="/images/logo.png"
               alt="Pandit Ji Ka Dhaba Logo"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
           </div>
           <div className="flex flex-col">

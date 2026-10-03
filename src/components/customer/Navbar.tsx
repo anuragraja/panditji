@@ -15,11 +15,11 @@ export function Navbar() {
     <header className="sticky top-0 z-40 bg-[#fffdf9]/95 backdrop-blur-md border-b border-[#e9e1d4]">
       <div className="container-dhaba h-[78px] flex items-center justify-between gap-6">
         <Link href="/" className="flex items-center gap-3 text-[#102a43] group">
-          <div className="w-[48px] h-[48px] rounded-full overflow-hidden border-2 border-[#d99a2b] shadow-brand transition-transform group-hover:scale-105 flex-shrink-0 bg-white">
+          <div className="w-[54px] h-[54px] rounded-full overflow-hidden border-2 border-[#d99a2b] shadow-brand transition-transform group-hover:scale-105 flex-shrink-0 bg-white">
             <img
               src="/images/logo.png"
               alt="Pandit Ji Ka Dhaba Logo"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
           </div>
           <div className="flex flex-col">
