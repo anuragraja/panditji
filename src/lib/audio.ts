@@ -1,8 +1,9 @@
-// High-impact Web Audio API synthesized restaurant kitchen alarm bell
-// Strong piercing chime & deep haptic vibration for immediate admin attention
+// High-impact Web Audio API + HTML5 Audio synthesized restaurant kitchen alarm bell
+// Strong piercing chime & deep haptic vibration for immediate admin attention on mobile & desktop
 
 class OrderAudioAlert {
   private ctx: AudioContext | null = null;
+  private audioEl: HTMLAudioElement | null = null;
   private isMuted: boolean = false;
   private isAlarmPlaying: boolean = false;
   private repeatTimer: NodeJS.Timeout | null = null;
@@ -13,15 +14,29 @@ class OrderAudioAlert {
       const storedMute = localStorage.getItem("pj_admin_sound_muted");
       this.isMuted = storedMute === "true";
 
-      // Unlock AudioContext on first user interaction if suspended
+      // Unlock AudioContext and Audio element on first user interaction if suspended
       const unlockAudio = () => {
         if (this.ctx && this.ctx.state === "suspended") {
           this.ctx.resume().catch(() => {});
+        }
+        if (!this.audioEl) {
+          this.initAudioElement();
         }
       };
       window.addEventListener("click", unlockAudio, { passive: true });
       window.addEventListener("touchstart", unlockAudio, { passive: true });
       window.addEventListener("keydown", unlockAudio, { passive: true });
+    }
+  }
+
+  private initAudioElement() {
+    if (!this.audioEl && typeof window !== "undefined") {
+      try {
+        this.audioEl = new Audio("/sounds/order-alert.wav");
+        this.audioEl.preload = "auto";
+      } catch {
+        // fallback to web audio
+      }
     }
   }
 
@@ -76,7 +91,7 @@ class OrderAudioAlert {
     // Play first burst immediately
     this.playOrderChime();
 
-    // Repeat alarm every 4 seconds until confirmed / stopped
+    // Repeat alarm every 4.2 seconds until confirmed / stopped
     this.repeatTimer = setInterval(() => {
       if (!this.isAlarmPlaying || this.isMuted) {
         this.stopAlarm();
@@ -97,33 +112,56 @@ class OrderAudioAlert {
     this.burstTimers.forEach((timer) => clearTimeout(timer));
     this.burstTimers = [];
 
+    // Pause and rewind HTML5 audio element
+    if (this.audioEl) {
+      try {
+        this.audioEl.pause();
+        this.audioEl.currentTime = 0;
+      } catch {
+        // ignore
+      }
+    }
+
     this.isAlarmPlaying = false;
 
+    // Stop device vibration
     if (typeof navigator !== "undefined" && navigator.vibrate) {
       try {
-        navigator.vibrate(0); // stop vibration immediately
+        navigator.vibrate(0);
       } catch {
         // ignore
       }
     }
   }
 
-  // Strong, loud 3-burst restaurant kitchen alarm bell
+  // Strong, loud 3-burst restaurant kitchen alarm bell + mobile vibration
   public playOrderChime() {
     if (this.isMuted) return;
 
+    // 1. Mobile & device haptic vibration pattern
+    if (typeof navigator !== "undefined" && navigator.vibrate) {
+      try {
+        navigator.vibrate([600, 250, 600, 250, 1000, 300, 1200]);
+      } catch {
+        // ignore if denied by browser
+      }
+    }
+
+    // 2. Try playing HTML5 Audio element
+    this.initAudioElement();
+    if (this.audioEl) {
+      try {
+        this.audioEl.currentTime = 0;
+        this.audioEl.play().catch(() => {});
+      } catch {
+        // ignore and fallback to Web Audio
+      }
+    }
+
+    // 3. Web Audio API synthesized harmonics for reliable cross-browser ring
     try {
       this.initContext();
       if (!this.ctx) return;
-
-      // Haptic Vibration Sequence (Deep pulses on Android/mobile)
-      if (typeof navigator !== "undefined" && navigator.vibrate) {
-        try {
-          navigator.vibrate([600, 250, 600, 250, 1000, 300, 1200]);
-        } catch {
-          // ignore if denied by browser
-        }
-      }
 
       const bursts = [0, 0.85, 1.7]; // 3 successive loud rings
       const notes = [
@@ -134,18 +172,16 @@ class OrderAudioAlert {
 
       bursts.forEach((burstOffset) => {
         const timerId = setTimeout(() => {
-          if (!this.ctx || this.isMuted) return;
+          if (!this.ctx || this.isMuted || !this.isAlarmPlaying) return;
           const now = this.ctx.currentTime;
 
           notes.forEach(({ freq, time, duration }) => {
-            // Oscillator 1: Fundamental Sine Wave
             const osc1 = this.ctx!.createOscillator();
             const gain1 = this.ctx!.createGain();
 
             osc1.type = "sine";
             osc1.frequency.setValueAtTime(freq, now + time);
 
-            // High volume gain (0.85) with bright attack and lingering decay
             gain1.gain.setValueAtTime(0.001, now + time);
             gain1.gain.exponentialRampToValueAtTime(0.85, now + time + 0.02);
             gain1.gain.exponentialRampToValueAtTime(0.001, now + time + duration);
@@ -156,7 +192,6 @@ class OrderAudioAlert {
             osc1.start(now + time);
             osc1.stop(now + time + duration + 0.05);
 
-            // Oscillator 2: Overtone harmonic for strong penetration
             const osc2 = this.ctx!.createOscillator();
             const gain2 = this.ctx!.createGain();
 
