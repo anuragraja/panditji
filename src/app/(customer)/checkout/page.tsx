@@ -105,6 +105,12 @@ export default function CheckoutPage() {
 
   const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      showToast("Please log in to your account to place an order.");
+      router.push("/login?redirect=/checkout");
+      return;
+    }
+
     if (items.length === 0) {
       setSubmitError("Your cart is empty. Please add items.");
       return;
@@ -233,6 +239,37 @@ export default function CheckoutPage() {
         <form onSubmit={handleSubmitOrder} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Checkout Fields */}
           <div className="lg:col-span-2 space-y-6">
+            {!user && (
+              <div className="bg-[#102a43] text-white rounded-3xl p-6 border-2 border-[#d99a2b] shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-12 h-12 rounded-2xl bg-[#d99a2b] text-[#102a43] flex items-center justify-center font-black text-2xl shrink-0 shadow-md">
+                    🔒
+                  </div>
+                  <div>
+                    <h3 className="font-serif-dhaba font-bold text-lg text-white">
+                      Please Log In to Place Your Order
+                    </h3>
+                    <p className="text-xs text-[#cbd8e0] mt-0.5">
+                      You must be signed in with your customer account to place orders, track kitchen updates, and view receipts.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2.5 w-full sm:w-auto shrink-0">
+                  <Link
+                    href="/login?redirect=/checkout"
+                    className="flex-1 sm:flex-initial btn-dhaba btn-dhaba-gold py-2.5 px-5 text-xs font-black text-center shadow-md"
+                  >
+                    Log In
+                  </Link>
+                  <Link
+                    href="/register?redirect=/checkout"
+                    className="flex-1 sm:flex-initial btn-dhaba btn-dhaba-outline py-2.5 px-5 text-xs font-bold text-center"
+                  >
+                    Register
+                  </Link>
+                </div>
+              </div>
+            )}
             {/* 1. Order Type (Delivery vs Pickup) */}
             <div className="bg-white rounded-3xl p-6 border border-[#e9e1d4] shadow-sm">
               <h2 className="font-serif-dhaba font-bold text-lg text-[#102a43] mb-4 flex items-center gap-2">
@@ -609,14 +646,24 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full btn-dhaba btn-dhaba-gold py-4 text-sm font-bold flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
-              >
-                <ShieldCheck className="w-4 h-4" />
-                <span>{loading ? "Placing Order..." : `Confirm Order (${formatCurrency(grandTotal)})`}</span>
-              </button>
+              {!user ? (
+                <Link
+                  href="/login?redirect=/checkout"
+                  className="w-full btn-dhaba btn-dhaba-gold py-4 text-sm font-bold flex items-center justify-center gap-2 shadow-lg"
+                >
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>Log In to Place Order ({formatCurrency(grandTotal)})</span>
+                </Link>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full btn-dhaba btn-dhaba-gold py-4 text-sm font-bold flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
+                >
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>{loading ? "Placing Order..." : `Confirm Order (${formatCurrency(grandTotal)})`}</span>
+                </button>
+              )}
 
               <p className="text-[10px] text-center text-[#6c7b87]">
                 By ordering, you agree to receive order status updates on your WhatsApp number.

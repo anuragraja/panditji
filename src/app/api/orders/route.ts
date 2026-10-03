@@ -220,9 +220,20 @@ export async function POST(req: NextRequest) {
 
     const total = Math.max(0, subtotal - couponDiscount + deliveryFee + tax);
 
-    // Step 7 & 8: Generate Order Number and Create Order in DB
-    const orderNumber = generateOrderNumber();
+    // Step 7 & 8: Validate Customer Login, Generate Order Number and Create Order in DB
     const currentUser = getUserFromRequest(req);
+    if (!currentUser) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Please login to your account to place an order.",
+          requireLogin: true,
+        },
+        { status: 401 }
+      );
+    }
+
+    const orderNumber = generateOrderNumber();
 
     const initialStatus: OrderStatus = "PENDING";
 

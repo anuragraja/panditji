@@ -1,14 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import { Lock, Phone, User as UserIcon, Mail, ArrowRight } from "lucide-react";
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectParam = searchParams.get("redirect");
+
   const { login } = useAuth();
   const { showToast } = useToast();
 
@@ -38,7 +41,12 @@ export default function RegisterPage() {
 
       login(data.user);
       showToast("Account created successfully! Welcome to Pandit Ji Ka Dhaba.");
-      router.push("/account");
+
+      if (redirectParam) {
+        router.push(redirectParam);
+      } else {
+        router.push("/account");
+      }
     } catch (err: unknown) {
       const error = err as Error;
       setErrorMsg(error.message || "Failed to register");
@@ -75,35 +83,33 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-[#102a43] mb-1">
-                Full Name *
-              </label>
+              <label className="block text-xs font-bold text-[#102a43] mb-1">Full Name</label>
               <div className="relative">
-                <UserIcon className="w-4 h-4 text-[#6c7b87] absolute left-3 top-1/2 -translate-y-1/2" />
+                <UserIcon className="w-4 h-4 text-[#6c7b87] absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
-                  required
                   type="text"
+                  required
                   placeholder="e.g. Anurag Rajak"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-9 pr-3 py-3 text-xs border border-[#ddd8cf] rounded-xl outline-none focus:border-[#d99a2b] bg-white text-[#172b3a]"
+                  className="w-full text-xs pl-10 pr-3.5 py-3 rounded-xl border border-[#ddd8cf] outline-none focus:border-[#d99a2b] bg-white transition-colors"
                 />
               </div>
             </div>
 
             <div>
               <label className="block text-xs font-bold text-[#102a43] mb-1">
-                Phone Number (10 digits) *
+                Phone Number (10 digits)
               </label>
               <div className="relative">
-                <Phone className="w-4 h-4 text-[#6c7b87] absolute left-3 top-1/2 -translate-y-1/2" />
+                <Phone className="w-4 h-4 text-[#6c7b87] absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
-                  required
                   type="tel"
+                  required
                   placeholder="e.g. 9876543210"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full pl-9 pr-3 py-3 text-xs border border-[#ddd8cf] rounded-xl outline-none focus:border-[#d99a2b] bg-white text-[#172b3a]"
+                  className="w-full text-xs pl-10 pr-3.5 py-3 rounded-xl border border-[#ddd8cf] outline-none focus:border-[#d99a2b] bg-white transition-colors"
                 />
               </div>
             </div>
@@ -113,30 +119,28 @@ export default function RegisterPage() {
                 Email Address (Optional)
               </label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-[#6c7b87] absolute left-3 top-1/2 -translate-y-1/2" />
+                <Mail className="w-4 h-4 text-[#6c7b87] absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="email"
                   placeholder="e.g. anurag@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-9 pr-3 py-3 text-xs border border-[#ddd8cf] rounded-xl outline-none focus:border-[#d99a2b] bg-white text-[#172b3a]"
+                  className="w-full text-xs pl-10 pr-3.5 py-3 rounded-xl border border-[#ddd8cf] outline-none focus:border-[#d99a2b] bg-white transition-colors"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#102a43] mb-1">
-                Password (min 6 characters) *
-              </label>
+              <label className="block text-xs font-bold text-[#102a43] mb-1">Password</label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-[#6c7b87] absolute left-3 top-1/2 -translate-y-1/2" />
+                <Lock className="w-4 h-4 text-[#6c7b87] absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
-                  required
                   type="password"
-                  placeholder="Create a secure password"
+                  required
+                  placeholder="Choose a secure password (min 6 chars)"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-9 pr-3 py-3 text-xs border border-[#ddd8cf] rounded-xl outline-none focus:border-[#d99a2b] bg-white text-[#172b3a]"
+                  className="w-full text-xs pl-10 pr-3.5 py-3 rounded-xl border border-[#ddd8cf] outline-none focus:border-[#d99a2b] bg-white transition-colors"
                 />
               </div>
             </div>
@@ -144,21 +148,32 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full btn-dhaba btn-dhaba-gold py-3 text-xs font-bold flex items-center justify-center gap-2 disabled:opacity-50 mt-2"
+              className="w-full btn-dhaba btn-dhaba-gold py-3 text-xs font-black flex items-center justify-center gap-2 shadow-md disabled:opacity-50"
             >
-              <span>{loading ? "Creating Account..." : "Register Now"}</span>
+              <span>{loading ? "Creating Account..." : "Register & Continue"}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 
           <div className="mt-6 pt-6 border-t border-[#e9e1d4] text-center text-xs text-[#6c7b87]">
             Already have an account?{" "}
-            <Link href="/login" className="font-bold text-[#d99a2b] hover:underline">
-              Log in here
+            <Link
+              href={redirectParam ? `/login?redirect=${encodeURIComponent(redirectParam)}` : "/login"}
+              className="font-bold text-[#d99a2b] hover:underline"
+            >
+              Sign in here
             </Link>
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#fbf7ef] flex items-center justify-center text-xs font-bold text-[#6c7b87]">Loading registration...</div>}>
+      <RegisterForm />
+    </Suspense>
   );
 }

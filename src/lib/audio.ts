@@ -1,9 +1,11 @@
-// Web Audio API synthesized restaurant order alert chime
-// Zero external network dependencies, works in all modern browsers
+// High-impact Web Audio API synthesized restaurant kitchen alarm bell
+// Strong piercing chime & deep haptic vibration for immediate admin attention
 
 class OrderAudioAlert {
   private ctx: AudioContext | null = null;
   private isMuted: boolean = false;
+  private isAlarmPlaying: boolean = false;
+  private repeatTimer: NodeJS.Timeout | null = null;
 
   constructor() {
     if (typeof window !== "undefined") {
@@ -14,7 +16,10 @@ class OrderAudioAlert {
 
   private initContext() {
     if (!this.ctx && typeof window !== "undefined") {
-      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const AudioCtx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext })
+          .webkitAudioContext;
       if (AudioCtx) {
         this.ctx = new AudioCtx();
       }
@@ -43,7 +48,7 @@ class OrderAudioAlert {
     return this.isMuted;
   }
 
-  // Plays a rich, pleasant 3-tone chime (F#5 -> A#5 -> C#6) mimicking a restaurant kitchen bell
+  // Strong, loud 3-burst restaurant kitchen alarm bell
   public playOrderChime() {
     if (this.isMuted) return;
 
@@ -51,62 +56,76 @@ class OrderAudioAlert {
       this.initContext();
       if (!this.ctx) return;
 
-      const now = this.ctx.currentTime;
+      // Haptic Vibration Sequence (Deep pulses on Android/mobile)
+      if (typeof navigator !== "undefined" && navigator.vibrate) {
+        try {
+          navigator.vibrate([600, 250, 600, 250, 1000, 300, 1200]);
+        } catch {
+          // ignore if denied by browser
+        }
+      }
+
+      const bursts = [0, 0.85, 1.7]; // 3 successive loud rings
       const notes = [
-        { freq: 740, time: 0, duration: 0.25 },     // F#5
-        { freq: 932.33, time: 0.15, duration: 0.3 }, // A#5
-        { freq: 1108.73, time: 0.32, duration: 0.6 } // C#6
+        { freq: 880, time: 0, duration: 0.3 },     // A5
+        { freq: 1108.73, time: 0.15, duration: 0.35 }, // C#6
+        { freq: 1318.51, time: 0.32, duration: 0.65 }, // E6 (High harmonic)
       ];
 
-      notes.forEach(({ freq, time, duration }) => {
-        const osc = this.ctx!.createOscillator();
-        const gain = this.ctx!.createGain();
+      bursts.forEach((burstOffset) => {
+        setTimeout(() => {
+          if (!this.ctx || this.isMuted) return;
+          const now = this.ctx.currentTime;
 
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(freq, now + time);
+          notes.forEach(({ freq, time, duration }) => {
+            // Oscillator 1: Fundamental Sine Wave
+            const osc1 = this.ctx!.createOscillator();
+            const gain1 = this.ctx!.createGain();
 
-        // Exponential decay for clean metallic chime acoustic
-        gain.gain.setValueAtTime(0.001, now + time);
-        gain.gain.exponentialRampToValueAtTime(0.35, now + time + 0.03);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + time + duration);
+            osc1.type = "sine";
+            osc1.frequency.setValueAtTime(freq, now + time);
 
-        osc.connect(gain);
-        gain.connect(this.ctx!.destination);
+            // High volume gain (0.85) with bright attack and lingering decay
+            gain1.gain.setValueAtTime(0.001, now + time);
+            gain1.gain.exponentialRampToValueAtTime(0.85, now + time + 0.02);
+            gain1.gain.exponentialRampToValueAtTime(0.001, now + time + duration);
 
-        osc.start(now + time);
-        osc.stop(now + time + duration + 0.05);
+            osc1.connect(gain1);
+            gain1.connect(this.ctx!.destination);
+
+            osc1.start(now + time);
+            osc1.stop(now + time + duration + 0.05);
+
+            // Oscillator 2: Overtone harmonic for strong penetration
+            const osc2 = this.ctx!.createOscillator();
+            const gain2 = this.ctx!.createGain();
+
+            osc2.type = "triangle";
+            osc2.frequency.setValueAtTime(freq * 1.5, now + time);
+
+            gain2.gain.setValueAtTime(0.001, now + time);
+            gain2.gain.exponentialRampToValueAtTime(0.45, now + time + 0.02);
+            gain2.gain.exponentialRampToValueAtTime(0.001, now + time + duration * 0.7);
+
+            osc2.connect(gain2);
+            gain2.connect(this.ctx!.destination);
+
+            osc2.start(now + time);
+            osc2.stop(now + time + duration + 0.05);
+          });
+        }, burstOffset * 1000);
       });
-
-      // Repeat second chime pulse after 0.75s for clear kitchen attention
-      setTimeout(() => {
-        if (!this.ctx || this.isMuted) return;
-        const now2 = this.ctx.currentTime;
-        notes.forEach(({ freq, time, duration }) => {
-          const osc = this.ctx!.createOscillator();
-          const gain = this.ctx!.createGain();
-
-          osc.type = "sine";
-          osc.frequency.setValueAtTime(freq * 1.05, now2 + time);
-
-          gain.gain.setValueAtTime(0.001, now2 + time);
-          gain.gain.exponentialRampToValueAtTime(0.4, now2 + time + 0.03);
-          gain.gain.exponentialRampToValueAtTime(0.001, now2 + time + duration);
-
-          osc.connect(gain);
-          gain.connect(this.ctx!.destination);
-
-          osc.start(now2 + time);
-          osc.stop(now2 + time + duration + 0.05);
-        });
-      }, 700);
-
-      // Mobile device vibration if supported
-      if (typeof navigator !== "undefined" && navigator.vibrate) {
-        navigator.vibrate([200, 100, 300]);
-      }
     } catch (e) {
-      console.warn("Audio chime autoplay blocked or not supported:", e);
+      console.warn("Kitchen chime playback error:", e);
     }
+  }
+
+  public stopAlarm() {
+    if (this.repeatTimer) {
+      clearInterval(this.repeatTimer);
+      this.repeatTimer = null;
+    }
+    this.isAlarmPlaying = false;
   }
 }
 

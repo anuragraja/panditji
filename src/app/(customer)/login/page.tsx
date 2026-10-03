@@ -1,14 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import { Lock, Phone, ArrowRight } from "lucide-react";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectParam = searchParams.get("redirect");
+
   const { login } = useAuth();
   const { showToast } = useToast();
 
@@ -37,7 +40,9 @@ export default function LoginPage() {
       login(data.user);
       showToast("Welcome back! Logged in successfully.");
 
-      if (data.user.role === "ADMIN") {
+      if (redirectParam) {
+        router.push(redirectParam);
+      } else if (data.user.role === "ADMIN") {
         router.push("/admin");
       } else {
         router.push("/account");
@@ -82,39 +87,37 @@ export default function LoginPage() {
                 Phone Number or Email
               </label>
               <div className="relative">
-                <Phone className="w-4 h-4 text-[#6c7b87] absolute left-3 top-1/2 -translate-y-1/2" />
+                <Phone className="w-4 h-4 text-[#6c7b87] absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
-                  required
                   type="text"
+                  required
                   placeholder="e.g. 9876543210 or email"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
-                  className="w-full pl-9 pr-3 py-3 text-xs border border-[#ddd8cf] rounded-xl outline-none focus:border-[#d99a2b] bg-white text-[#172b3a]"
+                  className="w-full text-xs pl-10 pr-3.5 py-3 rounded-xl border border-[#ddd8cf] outline-none focus:border-[#d99a2b] bg-white transition-colors"
                 />
               </div>
             </div>
 
             <div>
               <div className="flex justify-between items-center mb-1">
-                <label className="block text-xs font-bold text-[#102a43]">
-                  Password
-                </label>
+                <label className="text-xs font-bold text-[#102a43]">Password</label>
                 <Link
                   href="/forgot-password"
                   className="text-[11px] font-bold text-[#d99a2b] hover:underline"
                 >
-                  Forgot?
+                  Forgot password?
                 </Link>
               </div>
               <div className="relative">
-                <Lock className="w-4 h-4 text-[#6c7b87] absolute left-3 top-1/2 -translate-y-1/2" />
+                <Lock className="w-4 h-4 text-[#6c7b87] absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
-                  required
                   type="password"
+                  required
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-9 pr-3 py-3 text-xs border border-[#ddd8cf] rounded-xl outline-none focus:border-[#d99a2b] bg-white text-[#172b3a]"
+                  className="w-full text-xs pl-10 pr-3.5 py-3 rounded-xl border border-[#ddd8cf] outline-none focus:border-[#d99a2b] bg-white transition-colors"
                 />
               </div>
             </div>
@@ -122,21 +125,32 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full btn-dhaba btn-dhaba-gold py-3 text-xs font-bold flex items-center justify-center gap-2 disabled:opacity-50 mt-2"
+              className="w-full btn-dhaba btn-dhaba-gold py-3 text-xs font-black flex items-center justify-center gap-2 shadow-md disabled:opacity-50"
             >
-              <span>{loading ? "Logging in..." : "Log In"}</span>
+              <span>{loading ? "Signing In..." : "Sign In to Pandit Ji"}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 
           <div className="mt-6 pt-6 border-t border-[#e9e1d4] text-center text-xs text-[#6c7b87]">
-            Don&apos;t have an account yet?{" "}
-            <Link href="/register" className="font-bold text-[#d99a2b] hover:underline">
-              Create an Account
+            Don&apos;t have an account?{" "}
+            <Link
+              href={redirectParam ? `/register?redirect=${encodeURIComponent(redirectParam)}` : "/register"}
+              className="font-bold text-[#d99a2b] hover:underline"
+            >
+              Register here
             </Link>
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#fbf7ef] flex items-center justify-center text-xs font-bold text-[#6c7b87]">Loading login...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }
