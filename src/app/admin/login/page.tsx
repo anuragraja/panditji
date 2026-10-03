@@ -60,11 +60,12 @@ export default function AdminLoginPage() {
           <span>Return to Dhaba</span>
         </Link>
 
+        <div className="text-center mb-8">
           <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#d99a2b] mx-auto mb-3 shadow-brand bg-white">
             <img
               src="/images/logo.png"
               alt="Pandit Ji Admin"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
           </div>
           <span className="text-[10px] font-black tracking-widest text-[#d99a2b] uppercase block">
