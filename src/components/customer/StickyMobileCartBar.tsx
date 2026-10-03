@@ -11,7 +11,7 @@ export function StickyMobileCartBar() {
   if (totalCount === 0) return null;
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 p-3 bg-gradient-to-t from-[#102a43] via-[#102a43]/95 to-transparent pointer-events-none">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] bg-gradient-to-t from-[#102a43] via-[#102a43]/95 to-transparent pointer-events-none">
       <div className="container-dhaba pointer-events-auto">
         <button
           onClick={openCart}

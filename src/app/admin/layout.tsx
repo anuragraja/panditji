@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
@@ -14,6 +14,7 @@ export default function AdminLayout({
   const pathname = usePathname();
   const router = useRouter();
   const { user, isLoading } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const isLoginPage = pathname === "/admin/login";
 
@@ -40,10 +41,10 @@ export default function AdminLayout({
 
   return (
     <div className="flex min-h-screen bg-[#f7f3eb]">
-      <AdminSidebar />
+      <AdminSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col min-w-0">
-        <AdminTopbar />
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto">{children}</main>
+        <AdminTopbar onToggleSidebar={() => setSidebarOpen((v) => !v)} />
+        <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">{children}</main>
       </div>
     </div>
   );

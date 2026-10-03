@@ -3,12 +3,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import { Bell, ShieldCheck, Volume2, VolumeX, AlertCircle, X, ExternalLink } from "lucide-react";
+import { Bell, ShieldCheck, Volume2, VolumeX, AlertCircle, X, ExternalLink, Menu } from "lucide-react";
 import { orderAlert } from "@/lib/audio";
 import { IOrder } from "@/types";
 import { formatCurrency } from "@/lib/utils";
 
-export function AdminTopbar() {
+interface AdminTopbarProps {
+  onToggleSidebar?: () => void;
+}
+
+export function AdminTopbar({ onToggleSidebar }: AdminTopbarProps) {
   const { user } = useAuth();
   const [isMuted, setIsMuted] = useState(false);
   const [newOrderAlert, setNewOrderAlert] = useState<IOrder | null>(null);
@@ -83,10 +87,23 @@ export function AdminTopbar() {
 
   return (
     <>
-      <header className="h-16 bg-white border-b border-[#e9e1d4] px-6 flex items-center justify-between sticky top-0 z-30 shadow-sm">
-        <div className="flex items-center gap-3">
-          <span className="font-serif-dhaba font-bold text-sm text-[#102a43]">
+      <header className="h-16 bg-white border-b border-[#e9e1d4] px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Mobile menu toggle */}
+          <button
+            type="button"
+            onClick={onToggleSidebar}
+            className="lg:hidden p-2 text-[#102a43] hover:bg-[#f5ead5] rounded-xl transition-colors"
+            aria-label="Open navigation sidebar"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+
+          <span className="font-serif-dhaba font-bold text-sm text-[#102a43] hidden sm:inline">
             Kitchen & Restaurant Management
+          </span>
+          <span className="font-serif-dhaba font-bold text-sm text-[#102a43] sm:hidden">
+            Kitchen
           </span>
           <span className="text-[10px] bg-green-100 text-green-800 font-black px-2 py-0.5 rounded-full flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-green-600 animate-pulse" />

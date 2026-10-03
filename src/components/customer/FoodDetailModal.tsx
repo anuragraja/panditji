@@ -52,11 +52,11 @@ export function FoodDetailModal({ item, onClose }: FoodDetailModalProps) {
       onClick={onClose}
     >
       <div
-        className="bg-[#fffdf9] max-w-lg w-full rounded-2xl overflow-hidden shadow-2xl border border-[#e9e1d4] animate-in zoom-in-95 duration-200"
+        className="bg-[#fffdf9] max-w-lg w-full rounded-2xl overflow-hidden shadow-2xl border border-[#e9e1d4] animate-in zoom-in-95 duration-200 flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header image */}
-        <div className="relative h-56 w-full bg-[#102a43]">
+        <div className="relative h-44 sm:h-56 w-full bg-[#102a43] shrink-0">
           <Image
             src={item.image}
             alt={item.name}
@@ -90,7 +90,7 @@ export function FoodDetailModal({ item, onClose }: FoodDetailModalProps) {
         </div>
 
         {/* Content body */}
-        <div className="p-5 max-h-[60vh] overflow-y-auto space-y-4">
+        <div className="p-4 sm:p-5 flex-1 overflow-y-auto space-y-4">
           <p className="text-sm text-[#6c7b87] leading-relaxed">
             {item.description}
           </p>

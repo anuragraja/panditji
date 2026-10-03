@@ -92,15 +92,15 @@ export function Navbar() {
         </nav>
 
         {/* Right CTA Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <button
             onClick={openCart}
             aria-label="View Cart"
-            className="bg-[#d99a2b] hover:bg-[#b87f1c] text-white px-4 py-2.5 rounded-[11px] font-extrabold text-sm flex items-center gap-2 shadow-[0_8px_18px_rgba(217,154,43,0.22)] transition-all hover:scale-105 active:scale-95"
+            className="bg-[#d99a2b] hover:bg-[#b87f1c] text-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-[11px] font-extrabold text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 shadow-[0_8px_18px_rgba(217,154,43,0.22)] transition-all hover:scale-105 active:scale-95 shrink-0"
           >
             <ShoppingBag className="w-4 h-4" />
-            <span>Cart</span>
-            <span className="bg-white text-[#102a43] px-2 py-0.5 rounded-full text-xs font-black min-w-[20px] text-center">
+            <span className="hidden sm:inline">Cart</span>
+            <span className="bg-white text-[#102a43] px-1.5 sm:px-2 py-0.5 rounded-full text-xs font-black min-w-[18px] text-center">
               {totalCount}
             </span>
           </button>

@@ -26,7 +26,7 @@ export function Hero({ settings }: HeroProps) {
       <div className="container-dhaba py-[100px] max-sm:py-[80px] text-white">
         <div className="kicker">AUTHENTIC INDIAN KITCHEN</div>
 
-        <h1 className="font-serif-dhaba font-extrabold text-[clamp(48px,7vw,82px)] leading-[1.02] my-[18px] mb-[20px] max-w-[800px]">
+        <h1 className="font-serif-dhaba font-extrabold text-[clamp(36px,7vw,82px)] leading-[1.05] my-[18px] mb-[20px] max-w-[800px]">
           Desi Swad.<br />
           <em className="not-italic text-[#f2c35e]">Apno Wali Feeling.</em>
         </h1>
