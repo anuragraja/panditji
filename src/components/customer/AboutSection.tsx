@@ -8,7 +8,7 @@ export function AboutSection() {
         <div
           className="h-[480px] max-sm:h-[360px] rounded-[23px] relative bg-cover bg-center shadow-lg"
           style={{
-            backgroundImage: `linear-gradient(0deg, rgba(16, 42, 67, 0.6) 0%, transparent 60%), url("https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_400/RX_THUMBNAIL/IMAGES/VENDOR/2024/6/19/f37b4f64-9c06-4481-a8db-70d7d298ccf1_96295%20SS.jpg")`,
+            backgroundImage: `linear-gradient(0deg, rgba(16, 42, 67, 0.6) 0%, transparent 60%), url("https://chatgpt.com/backend-api/estuary/content?id=file_000000001a088207b6b051325c57380d&ts=497514&p=fs&cid=1&sig=dc4449e18b039667ae49d5b739f0e69071f5d10431bd5ba488f9fe3d479ef6de&v=0")`,
           }}
         >
           <div className="absolute right-5 bottom-5 bg-white text-[#102a43] p-[15px_20px] rounded-[13px] text-center text-[11px] font-extrabold shadow-brand">
