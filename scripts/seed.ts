@@ -273,8 +273,8 @@ async function seed() {
     heroImage:
       "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=1900&q=88",
     announcementBanner: {
-      enabled: true,
-      text: "Swagatam! Authentic desi flavours served hot. Free delivery on orders above ₹499.",
+      enabled: false,
+      text: "",
     },
   };
 

@@ -28,13 +28,6 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Announcement Banner if enabled */}
-      {settings?.announcementBanner?.enabled && settings.announcementBanner.text && (
-        <div className="bg-[#102a43] text-[#f5d28d] py-2 px-4 text-center text-xs font-bold border-b border-[#d99a2b]/30 flex items-center justify-center gap-2">
-          <span>📢</span>
-          <span>{settings.announcementBanner.text}</span>
-        </div>
-      )}
 
       <Hero settings={settings} />
       <TrustStrip />
