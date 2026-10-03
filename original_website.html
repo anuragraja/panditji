@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Pandit Ji Ka Dhaba — authentic Indian food, fresh ingredients and warm hospitality.">
+  <title>Pandit Ji Ka Dhaba | Authentic Indian Taste</title>
+  <style>
+    :root {
+      --navy: #102a43;
+      --navy2: #183b5b;
+      --blue: #246b9b;
+      --gold: #d99a2b;
+      --cream: #fbf7ef;
+      --paper: #fffdf9;
+      --ink: #172b3a;
+      --muted: #6c7b87;
+      --line: #e9e1d4;
+      --white: #fff;
+      --shadow: 0 18px 45px rgba(16, 42, 67, .10);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.55
+    }
+
+    button,
+    a {
+      font: inherit
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit
+    }
+
+    .container {
+      width: min(1160px, 92%);
+      margin: auto
+    }
+
+    /* HEADER */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 253, 249, .96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line)
+    }
+
+    .nav {
+      height: 78px;
+      display: flex;
+      align-items: center;
+      gap: 28px
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--navy)
+    }
+
+    .logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: var(--navy);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 16px;
+      border: 2px solid var(--gold);
+      box-shadow: 0 7px 18px rgba(16, 42, 67, .16)
+    }
+
+    .brand-name {
+      font-family: Georgia, serif;
+      font-weight: 800;
+      font-size: 19px;
+      line-height: 1
+    }
+
+    .brand-sub {
+      display: block;
+      font-size: 8px;
+      letter-spacing: 3px;
+      color: var(--gold);
+      margin-top: 5px;
+      font-weight: 800
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 25px;
+      margin-left: auto
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      font-weight: 700;
+      color: #526575;
+      transition: .2s
+    }
+
+    .nav-links a:hover {
+      color: var(--navy)
+    }
+
+    .nav-order {
+      border: 0;
+      background: var(--gold);
+      color: #fff;
+      padding: 11px 17px;
+      border-radius: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(217, 154, 43, .22)
+    }
+
+    .menu-toggle {
+      display: none;
+      border: 0;
+      background: transparent;
+      color: var(--navy);
+      font-size: 25px
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 680px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      background:
+        linear-gradient(90deg, rgba(9, 29, 45, .93) 0%, rgba(16, 42, 67, .78) 48%, rgba(16, 42, 67, .28) 100%),
+        url("https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=1900&q=88") center/cover
+    }
+
+    .hero-content {
+      color: #fff;
+      padding: 100px 0
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 11px;
+      letter-spacing: 2.8px;
+      font-weight: 900;
+      color: #f5d28d
+    }
+
+    .kicker:before {
+      content: "";
+      width: 28px;
+      height: 2px;
+      background: var(--gold)
+    }
+
+    .hero h1 {
+      font: 800 clamp(48px, 7vw, 82px)/1.02 Georgia, serif;
+      margin: 18px 0 20px;
+      max-width: 800px
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: #f2c35e
+    }
+
+    .hero p {
+      max-width: 610px;
+      color: #e9f0f4;
+      font-size: 17px;
+      line-height: 1.8
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 30px
+    }
+
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      padding: 14px 22px;
+      border-radius: 11px;
+      font-weight: 800;
+      border: 0;
+      cursor: pointer
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: #fff;
+      box-shadow: 0 10px 22px rgba(217, 154, 43, .24)
+    }
+
+    .btn-outline {
+      border: 1px solid rgba(255, 255, 255, .6);
+      color: #fff;
+      background: rgba(255, 255, 255, .08)
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 34px;
+      margin-top: 48px
+    }
+
+    .hero-meta strong {
+      display: block;
+      font-size: 21px
+    }
+
+    .hero-meta span {
+      font-size: 11px;
+      color: #cbd8e0
+    }
+
+    /* TRUST STRIP */
+    .trust {
+      background: var(--navy);
+      color: #fff
+    }
+
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 26px 0
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 20px;
+      border-right: 1px solid rgba(255, 255, 255, .12)
+    }
+
+    .trust-item:first-child {
+      padding-left: 0
+    }
+
+    .trust-item:last-child {
+      border: 0
+    }
+
+    .trust-icon {
+      font-size: 27px
+    }
+
+    .trust-item b {
+      display: block;
+      font-size: 13px
+    }
+
+    .trust-item span {
+      display: block;
+      font-size: 11px;
+      color: #bdcbd4;
+      margin-top: 3px
+    }
+
+    /* GENERAL */
+    .section {
+      padding: 94px 0
+    }
+
+    .section-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 25px;
+      margin-bottom: 35px
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: 2.8px;
+      color: var(--gold);
+      font-weight: 900
+    }
+
+    h2 {
+      font: 800 43px/1.12 Georgia, serif;
+      color: var(--navy);
+      margin-top: 9px
+    }
+
+    h2 span {
+      color: var(--blue)
+    }
+
+    .section-top>p {
+      max-width: 420px;
+      color: var(--muted);
+      font-size: 14px
+    }
+
+    /* MENU */
+    .menu-section {
+      background: var(--cream)
+    }
+
+    .categories {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      margin-bottom: 26px
+    }
+
+    .cat {
+      border: 1px solid #ddd3c4;
+      background: #fffaf2;
+      color: #586b78;
+      padding: 9px 15px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer
+    }
+
+    .cat.active,
+    .cat:hover {
+      background: var(--navy);
+      color: #fff;
+      border-color: var(--navy)
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px
+    }
+
+    .food-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 13px;
+      transition: .25s;
+      box-shadow: 0 5px 18px rgba(16, 42, 67, .035)
+    }
+
+    .food-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow)
+    }
+
+    .food-img {
+      height: 190px;
+      border-radius: 13px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      overflow: hidden
+    }
+
+    .food-img:after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 55%, rgba(0, 0, 0, .35))
+    }
+
+    .tag {
+      position: absolute;
+      z-index: 2;
+      top: 10px;
+      left: 10px;
+      background: #fff;
+      color: var(--navy);
+      font-size: 10px;
+      font-weight: 900;
+      padding: 6px 9px;
+      border-radius: 7px
+    }
+
+    .food-info {
+      padding: 13px 3px 4px
+    }
+
+    .food-info h3 {
+      font: 700 21px Georgia, serif;
+      color: var(--navy)
+    }
+
+    .food-info p {
+      font-size: 12px;
+      color: var(--muted);
+      min-height: 38px;
+      margin-top: 5px
+    }
+
+    .food-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px
+    }
+
+    .price {
+      font-weight: 900;
+      color: var(--navy);
+      font-size: 18px
+    }
+
+    .add-btn {
+      border: 0;
+      background: #f5ead5;
+      color: #9a6714;
+      padding: 9px 13px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer
+    }
+
+    .add-btn:hover {
+      background: var(--gold);
+      color: #fff
+    }
+
+    /* OFFER */
+    .offer-wrap {
+      padding: 0 0 94px;
+      background: var(--cream)
+    }
+
+    .offer {
+      border-radius: 22px;
+      background: linear-gradient(115deg, var(--navy), var(--navy2));
+      color: #fff;
+      padding: 38px 42px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow)
+    }
+
+    .offer h3 {
+      font: 700 30px Georgia, serif;
+      margin-top: 7px
+    }
+
+    .offer p {
+      color: #c9d5dc;
+      font-size: 13px;
+      margin-top: 7px
+    }
+
+    .offer-right {
+      text-align: right
+    }
+
+    .offer-right small {
+      color: #c9d5dc
+    }
+
+    .offer-right strong {
+      display: block;
+      font-size: 34px;
+      color: #f2c35e;
+      margin-bottom: 9px
+    }
+
+    /* ABOUT */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+      align-items: center
+    }
+
+    .about-photo {
+      height: 480px;
+      border-radius: 23px;
+      background: linear-gradient(0deg, rgba(16, 42, 67, .6), transparent 60%), url("https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd7?auto=format&fit=crop&w=1000&q=88") center/cover;
+      position: relative
+    }
+
+    .since {
+      position: absolute;
+      right: 20px;
+      bottom: 20px;
+      background: #fff;
+      color: var(--navy);
+      padding: 15px 20px;
+      border-radius: 13px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 800
+    }
+
+    .since strong {
+      display: block;
+      font: 700 24px Georgia, serif;
+      color: var(--gold)
+    }
+
+    .about-copy p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.85;
+      margin: 20px 0
+    }
+
+    .checks {
+      display: grid;
+      gap: 11px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #3d5362
+    }
+
+    .checks span {
+      color: #9a6714;
+      margin-right: 7px
+    }
+
+    /* GALLERY */
+    .gallery-section {
+      background: #f7f3eb
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      grid-template-rows: 185px 185px;
+      gap: 13px
+    }
+
+    .g {
+      border-radius: 16px;
+      background-position: center;
+      background-size: cover;
+      position: relative;
+      overflow: hidden
+    }
+
+    .g:after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 45%, rgba(9, 29, 45, .7))
+    }
+
+    .g span {
+      position: absolute;
+      z-index: 2;
+      left: 16px;
+      bottom: 14px;
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px
+    }
+
+    .g1 {
+      grid-row: span 2;
+      background-image: url("https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=1000&q=85")
+    }
+
+    .g2 {
+      background-image: url("https://images.unsplash.com/photo-1628294895950-9805252327bc?auto=format&fit=crop&w=800&q=85")
+    }
+
+    .g3 {
+      background-image: url("https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=85")
+    }
+
+    .g4 {
+      background-image: url("https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=800&q=85")
+    }
+
+    .g5 {
+      background-image: url("https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=800&q=85")
+    }
+
+    /* REVIEWS */
+    .center {
+      text-align: center;
+      margin-bottom: 35px
+    }
+
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px
+    }
+
+    .review {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      padding: 25px
+    }
+
+    .stars {
+      color: var(--gold);
+      letter-spacing: 2px;
+      font-size: 13px
+    }
+
+    .review p {
+      color: #60717d;
+      font-size: 13px;
+      line-height: 1.8;
+      margin: 14px 0
+    }
+
+    .review b {
+      font-size: 13px;
+      color: var(--navy)
+    }
+
+    .review small {
+      display: block;
+      color: #89959e;
+      font-size: 11px;
+      margin-top: 4px
+    }
+
+    /* CONTACT */
+    .contact {
+      background: var(--navy);
+      color: #fff;
+      padding: 82px 0
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 65px
+    }
+
+    .contact h2 {
+      color: #fff
+    }
+
+    .contact-copy>p {
+      color: #c4d1d9;
+      max-width: 540px;
+      font-size: 14px;
+      margin: 16px 0 28px
+    }
+
+    .contact-list {
+      display: grid;
+      gap: 17px
+    }
+
+    .contact-list div {
+      display: flex;
+      gap: 13px;
+      align-items: flex-start
+    }
+
+    .contact-list .ci {
+      font-size: 20px
+    }
+
+    .contact-list b {
+      display: block;
+      font-size: 13px
+    }
+
+    .contact-list span {
+      display: block;
+      color: #b8c7d0;
+      font-size: 12px;
+      margin-top: 3px
+    }
+
+    .booking {
+      background: #fff;
+      color: var(--ink);
+      border-radius: 19px;
+      padding: 27px
+    }
+
+    .booking h3 {
+      font: 700 25px Georgia, serif;
+      color: var(--navy);
+      margin-bottom: 15px
+    }
+
+    .booking input,
+    .booking select {
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid #ddd8cf;
+      border-radius: 9px;
+      margin: 5px 0;
+      outline: none;
+      background: #fff
+    }
+
+    .booking .btn {
+      width: 100%;
+      margin-top: 7px
+    }
+
+    .booking-msg {
+      font-size: 12px;
+      color: #2d7a52;
+      margin-top: 10px
+    }
+
+    /* FOOTER */
+    footer {
+      background: #091d2d;
+      color: #c4d0d7
+    }
+
+    .footer {
+      padding: 30px 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center
+    }
+
+    .footer p {
+      font-size: 12px;
+      color: #93a4ae
+    }
+
+    .footer-links {
+      font-size: 12px;
+      color: #d5e0e6
+    }
+
+    .copy {
+      text-align: center;
+      border-top: 1px solid rgba(255, 255, 255, .08);
+      padding: 16px;
+      font-size: 10px;
+      color: #81929d
+    }
+
+    /* CART */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 17, 27, .62);
+      z-index: 200;
+      display: none;
+      justify-content: flex-end
+    }
+
+    .modal.show {
+      display: flex
+    }
+
+    .cart {
+      width: min(450px, 100%);
+      height: 100%;
+      background: #fffdf9;
+      padding: 30px;
+      overflow: auto
+    }
+
+    .close {
+      float: right;
+      border: 0;
+      background: #f0ece4;
+      color: var(--navy);
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      font-size: 22px;
+      cursor: pointer
+    }
+
+    .cart h2 {
+      font-size: 31px;
+      margin: 10px 0 22px
+    }
+
+    .cart-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      padding: 15px 0
+    }
+
+    .cart-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      background: #f5ead5;
+      display: grid;
+      place-items: center;
+      font-size: 26px
+    }
+
+    .cart-row .details {
+      flex: 1
+    }
+
+    .cart-row b {
+      color: var(--navy)
+    }
+
+    .qty {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 6px
+    }
+
+    .qty button {
+      border: 0;
+      background: #eee7da;
+      color: var(--navy);
+      width: 25px;
+      height: 25px;
+      border-radius: 6px;
+      font-weight: 900;
+      cursor: pointer
+    }
+
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 18px;
+      padding: 22px 0
+    }
+
+    .cart-empty {
+      color: var(--muted);
+      padding: 25px 0;
+      font-size: 13px
+    }
+
+    .full {
+      width: 100%
+    }
+
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      background: var(--navy);
+      color: #fff;
+      padding: 13px 17px;
+      border-radius: 10px;
+      font-size: 12px;
+      z-index: 300;
+      transform: translateY(90px);
+      opacity: 0;
+      transition: .25s
+    }
+
+    .toast.show {
+      transform: none;
+      opacity: 1
+    }
+
+    @media(max-width:850px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 78px;
+        left: 0;
+        right: 0;
+        background: #fffdf9;
+        padding: 18px 5%;
+        flex-direction: column;
+        box-shadow: 0 15px 25px rgba(16, 42, 67, .1)
+      }
+
+      .nav-links.open {
+        display: flex
+      }
+
+      .menu-toggle {
+        display: block;
+        margin-left: auto
+      }
+
+      .nav-order {
+        display: none
+      }
+
+      .trust-grid {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .trust-item {
+        border: 0;
+        padding: 10px 0
+      }
+
+      .menu-grid,
+      .reviews-grid {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .about-grid,
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 35px
+      }
+
+      .section-top {
+        display: block
+      }
+
+      .section-top>p {
+        margin-top: 12px
+      }
+
+      .offer {
+        display: block
+      }
+
+      .offer-right {
+        text-align: left;
+        margin-top: 18px
+      }
+
+      .footer {
+        display: grid
+      }
+    }
+
+    @media(max-width:560px) {
+      .hero {
+        min-height: 620px
+      }
+
+      .hero-content {
+        padding: 80px 0
+      }
+
+      .hero h1 {
+        font-size: 48px
+      }
+
+      .hero-meta {
+        gap: 18px
+      }
+
+      .trust-grid,
+      .menu-grid,
+      .reviews-grid {
+        grid-template-columns: 1fr
+      }
+
+      .trust-item {
+        padding: 10px 0
+      }
+
+      .section {
+        padding: 68px 0
+      }
+
+      h2 {
+        font-size: 35px
+      }
+
+      .gallery {
+        grid-template-columns: 1fr;
+        grid-template-rows: 180px 180px 180px 180px 180px
+      }
+
+      .g1 {
+        grid-row: auto
+      }
+
+      .about-photo {
+        height: 360px
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="container nav">
+      <a class="brand" href="#home">
+        <span class="logo">PJ</span>
+        <span><span class="brand-name">Pandit Ji</span><span class="brand-sub">KA DHABA</span></span>
+      </a>
+      <button class="menu-toggle" onclick="toggleNav()">☰</button>
+      <nav class="nav-links" id="navLinks">
+        <a href="#home">Home</a>
+        <a href="#menu">Menu</a>
+        <a href="#about">Our Story</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#reviews">Reviews</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button class="nav-order" onclick="openCart()">🛒 Cart <span id="count">0</span></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-content">
+        <div class="kicker">AUTHENTIC INDIAN KITCHEN</div>
+        <h1>Desi Swad.<br><em>Apno Wali Feeling.</em></h1>
+        <p>Fresh ingredients, traditional recipes and the warmth of a true Indian dhaba — served fresh to your table.
+        </p>
+        <div class="actions">
+          <a class="btn btn-gold" href="#menu">Explore Menu</a>
+          <a class="btn btn-outline" href="#contact">Book a Table</a>
+        </div>
+        <div class="hero-meta">
+          <div><strong>4.9 ★</strong><span>Guest Rating</span></div>
+          <div><strong>15+</strong><span>Signature Dishes</span></div>
+          <div><strong>100%</strong><span>Freshly Prepared</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="trust">
+      <div class="container trust-grid">
+        <div class="trust-item"><span class="trust-icon">🥘</span>
+          <div><b>Authentic Taste</b><span>Traditional recipes</span></div>
+        </div>
+        <div class="trust-item"><span class="trust-icon">🌿</span>
+          <div><b>Fresh Ingredients</b><span>Quality in every bite</span></div>
+        </div>
+        <div class="trust-item"><span class="trust-icon">🔥</span>
+          <div><b>Freshly Cooked</b><span>Hot & served fresh</span></div>
+        </div>
+        <div class="trust-item"><span class="trust-icon">🤝</span>
+          <div><b>Warm Hospitality</b><span>Family-style service</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section menu-section" id="menu">
+      <div class="container">
+        <div class="section-top">
+          <div>
+            <div class="eyebrow">FROM OUR KITCHEN</div>
+            <h2>Our <span>Menu</span></h2>
+          </div>
+          <p>Simple, authentic and carefully prepared dishes — made for a satisfying desi meal.</p>
+        </div>
+        <div class="categories" id="categories"></div>
+        <div class="menu-grid" id="menuGrid"></div>
+      </div>
+    </section>
+
+    <section class="offer-wrap">
+      <div class="container">
+        <div class="offer">
+          <div>
+            <div class="eyebrow">CHEF'S FAMILY COMBO</div>
+            <h3>Family Meal — Perfect for Sharing</h3>
+            <p>Dal Tadka • Paneer Curry • 4 Butter Rotis • Jeera Rice • Salad</p>
+          </div>
+          <div class="offer-right"><small>Special price</small><strong>₹449</strong><button class="btn btn-gold"
+              onclick="add('combo')">Add Combo</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="container about-grid">
+        <div class="about-photo">
+          <div class="since">SERVING WITH LOVE<strong>SINCE 2026</strong></div>
+        </div>
+        <div class="about-copy">
+          <div class="eyebrow">OUR STORY</div>
+          <h2>A Taste That Feels <span>Like Home.</span></h2>
+          <p>Pandit Ji Ka Dhaba is built around one simple idea: serve honest Indian food with the warmth of home. Every
+            dish is prepared with familiar spices, fresh ingredients and time-tested flavours.</p>
+          <div class="checks">
+            <div><span>✓</span> Freshly prepared to order</div>
+            <div><span>✓</span> Quality ingredients & hygienic preparation</div>
+            <div><span>✓</span> Traditional Indian flavours</div>
+            <div><span>✓</span> Friendly, family-style hospitality</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section gallery-section" id="gallery">
+      <div class="container">
+        <div class="center">
+          <div class="eyebrow">A GLIMPSE FROM OUR KITCHEN</div>
+          <h2>Made Fresh. Served <span>With Love.</span></h2>
+        </div>
+        <div class="gallery">
+          <div class="g g1"><span>Traditional Indian Platter</span></div>
+          <div class="g g2"><span>Fresh Tandoor</span></div>
+          <div class="g g3"><span>Desi Favourites</span></div>
+          <div class="g g4"><span>Rich Indian Curries</span></div>
+          <div class="g g5"><span>Refreshing Drinks</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="reviews">
+      <div class="container">
+        <div class="center">
+          <div class="eyebrow">GUEST LOVE</div>
+          <h2>What Our <span>Guests Say</span></h2>
+        </div>
+        <div class="reviews-grid">
+          <article class="review">
+            <div class="stars">★★★★★</div>
+            <p>“The food has that proper ghar-jaisa taste. Paneer and dal were excellent.”</p><b>Rahul
+              Sharma</b><small>Regular Guest</small>
+          </article>
+          <article class="review">
+            <div class="stars">★★★★★</div>
+            <p>“Great service, fresh food and a really comfortable family atmosphere.”</p><b>Priya Verma</b><small>Happy
+              Guest</small>
+          </article>
+          <article class="review">
+            <div class="stars">★★★★★</div>
+            <p>“Loved the traditional flavours. The family combo is filling and delicious.”</p><b>Arjun
+              Singh</b><small>Food Lover</small>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="container contact-grid">
+        <div class="contact-copy">
+          <div class="eyebrow">COME & VISIT</div>
+          <h2>Let's Share A Meal.</h2>
+          <p>Drop in for a hearty meal, a refreshing drink and the kind of hospitality that makes you want to come back.
+          </p>
+          <div class="contact-list">
+            <div><span class="ci">📍</span>
+              <div><b>Address</b><span>Main Road, Bhopal, Madhya Pradesh</span></div>
+            </div>
+            <div><span class="ci">📞</span>
+              <div><b>Call Us</b><span>+91 90000 00000</span></div>
+            </div>
+            <div><span class="ci">🕐</span>
+              <div><b>Opening Hours</b><span>11:00 AM – 11:00 PM • Every Day</span></div>
+            </div>
+          </div>
+        </div>
+        <form class="booking" id="bookingForm">
+          <h3>Book a Table</h3>
+          <input required placeholder="Your Name">
+          <input required type="tel" placeholder="Phone Number">
+          <input required type="date">
+          <select required>
+            <option value="">Number of Guests</option>
+            <option>1–2 Guests</option>
+            <option>3–4 Guests</option>
+            <option>5–8 Guests</option>
+            <option>9+ Guests</option>
+          </select>
+          <button class="btn btn-gold" type="submit">Request Booking</button>
+          <div class="booking-msg" id="bookingMsg"></div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer">
+      <a class="brand" href="#home"><span class="logo">PJ</span><span><span class="brand-name">Pandit Ji</span><span
+            class="brand-sub">KA DHABA</span></span></a>
+      <p>Authentic Indian flavours. Fresh food. Warm hospitality.</p>
+      <div class="footer-links">Home • Menu • Contact</div>
+    </div>
+    <div class="copy">© 2026 Pandit Ji Ka Dhaba • All rights reserved.</div>
+  </footer>
+
+  <div class="modal" id="cartModal">
+    <aside class="cart">
+      <button class="close" onclick="closeCart()">×</button>
+      <h2>Your Cart</h2>
+      <div id="cartItems"></div>
+      <div class="cart-total"><span>Total</span><b id="total">₹0</b></div>
+      <button class="btn btn-gold full" onclick="placeOrder()">Place Order on WhatsApp</button>
+    </aside>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const dishes = [
+      { id: "paneer", name: "Paneer Butter Masala", cat: "Main Course", price: 220, tag: "POPULAR", desc: "Soft paneer in a rich tomato-butter gravy.", img: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=900&q=85" },
+      { id: "dal", name: "Dal Tadka", cat: "Main Course", price: 160, tag: "CLASSIC", desc: "Yellow dal finished with ghee and Indian spices.", img: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=900&q=85" },
+      { id: "chole", name: "Amritsari Chole", cat: "Main Course", price: 170, tag: "CHEF'S PICK", desc: "Punjabi chickpeas cooked in a bold masala.", img: "https://images.unsplash.com/photo-1626132647523-66f5bf380027?auto=format&fit=crop&w=900&q=85" },
+      { id: "roti", name: "Tandoori Roti", cat: "Breads", price: 25, tag: "FRESH", desc: "Smoky, crisp-edged roti straight from the tandoor.", img: "https://images.unsplash.com/photo-1628294895950-9805252327bc?auto=format&fit=crop&w=900&q=85" },
+      { id: "naan", name: "Butter Naan", cat: "Breads", price: 55, tag: "POPULAR", desc: "Soft naan finished with a generous touch of butter.", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=85" },
+      { id: "rice", name: "Jeera Rice", cat: "Rice", price: 140, tag: "CLASSIC", desc: "Fragrant basmati rice with roasted cumin.", img: "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=900&q=85" },
+      { id: "biryani", name: "Veg Biryani", cat: "Rice", price: 210, tag: "CHEF'S PICK", desc: "Aromatic basmati layered with vegetables and herbs.", img: "https://images.unsplash.com/photo-1563379091339-03246963d96c?auto=format&fit=crop&w=900&q=85" },
+      { id: "lassi", name: "Sweet Lassi", cat: "Drinks", price: 80, tag: "REFRESHING", desc: "Thick, chilled and traditionally churned.", img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=900&q=85" },
+      { id: "chaas", name: "Masala Chaas", cat: "Drinks", price: 60, tag: "REFRESHING", desc: "Cool buttermilk with roasted spices.", img: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=900&q=85" },
+      { id: "combo", name: "Family Meal Combo", cat: "Combos", price: 449, tag: "BEST VALUE", desc: "Dal, paneer curry, rotis, jeera rice and salad.", img: "https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd7?auto=format&fit=crop&w=900&q=85" }
+    ];
+    let cart = JSON.parse(localStorage.getItem("pj_cart_v2") || "{}");
+
+    const cats = ["All", ...new Set(dishes.map(d => d.cat))];
+    document.getElementById("categories").innerHTML = cats.map((c, i) => `<button class="cat ${i === 0 ? "active" : ""}" onclick="filterMenu('${c}',this)">${c}</button>`).join("");
+
+    function renderMenu(cat = "All") {
+      const list = cat === "All" ? dishes : dishes.filter(d => d.cat === cat);
+      document.getElementById("menuGrid").innerHTML = list.map(d => `
+ <article class="food-card">
+   <div class="food-img" style="background-image:url('${d.img}')"><span class="tag">${d.tag}</span></div>
+   <div class="food-info"><h3>${d.name}</h3><p>${d.desc}</p>
+   <div class="food-bottom"><span class="price">₹${d.price}</span><button class="add-btn" onclick="add('${d.id}')">+ Add</button></div></div>
+ </article>`).join("");
+    }
+    function filterMenu(cat, el) {
+      document.querySelectorAll(".cat").forEach(x => x.classList.remove("active"));
+      el.classList.add("active"); renderMenu(cat);
+    }
+    function add(id) { cart[id] = (cart[id] || 0) + 1; saveCart(); toast("Added to your cart ✓") }
+    function saveCart() { localStorage.setItem("pj_cart_v2", JSON.stringify(cart)); updateCount() }
+    function updateCount() { document.getElementById("count").textContent = Object.values(cart).reduce((a, b) => a + b, 0) }
+    function openCart() { renderCart(); document.getElementById("cartModal").classList.add("show") }
+    function closeCart() { document.getElementById("cartModal").classList.remove("show") }
+    function renderCart() {
+      const entries = Object.entries(cart).filter(([id, q]) => q > 0), box = document.getElementById("cartItems");
+      if (!entries.length) { box.innerHTML = '<div class="cart-empty">Your cart is empty. Add your favourite dishes from the menu.</div>' }
+      else box.innerHTML = entries.map(([id, q]) => {
+        const d = dishes.find(x => x.id === id);
+        return `<div class="cart-row"><div class="cart-icon">🍽️</div><div class="details"><b>${d.name}</b><div class="qty"><button onclick="changeQty('${id}',-1)">−</button><span>${q}</span><button onclick="changeQty('${id}',1)">+</button></div></div><b>₹${d.price * q}</b></div>`;
+      }).join("");
+      document.getElementById("total").textContent = "₹" + entries.reduce((s, [id, q]) => s + dishes.find(d => d.id === id).price * q, 0);
+    }
+    function changeQty(id, n) { cart[id] = (cart[id] || 0) + n; if (cart[id] <= 0) delete cart[id]; saveCart(); renderCart() }
+    function placeOrder() {
+      if (!Object.keys(cart).length) { toast("Your cart is empty."); return }
+      const entries = Object.entries(cart), lines = entries.map(([id, q]) => { const d = dishes.find(x => x.id === id); return `${d.name} x ${q} = ₹${d.price * q}` });
+      const total = entries.reduce((s, [id, q]) => s + dishes.find(d => d.id === id).price * q, 0);
+      const msg = encodeURIComponent(`Hello Pandit Ji Ka Dhaba!\n\nI would like to place an order:\n${lines.join("\n")}\n\nTotal: ₹${total}`);
+      window.open(`https://wa.me/919000000000?text=${msg}`, "_blank");
+    }
+    function toast(t) { const el = document.getElementById("toast"); el.textContent = t; el.classList.add("show"); setTimeout(() => el.classList.remove("show"), 2200) }
+    function toggleNav() { document.getElementById("navLinks").classList.toggle("open") }
+    document.getElementById("bookingForm").addEventListener("submit", e => {
+      e.preventDefault(); document.getElementById("bookingMsg").textContent = "✓ Request received. We will contact you shortly."; e.target.reset();
+    });
+    document.getElementById("cartModal").addEventListener("click", e => { if (e.target.id === "cartModal") closeCart() });
+    renderMenu(); updateCount();
+  </script>
+</body>
+
+</html>
