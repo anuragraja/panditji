@@ -24,7 +24,10 @@ export default async function HomePage() {
     getApprovedReviews(),
   ]);
 
-  const comboDish = dishes.find((d) => d.slug === "family-meal-combo") || null;
+  const comboDish =
+    dishes.find((d) => d.slug === "family-meal-combo" && d.available) ||
+    dishes.find((d) => d.category === "Combos" && d.available) ||
+    null;
 
   return (
     <>

@@ -4,11 +4,16 @@ import React, { useState, useEffect, useCallback } from "react";
 import { ICategory } from "@/types";
 import { useToast } from "@/context/ToastContext";
 import { Plus, Edit2, Trash2, CheckCircle, XCircle, X } from "lucide-react";
+import { getCachedData, setCachedData, invalidateCache } from "@/lib/client-cache";
 
 export default function AdminCategoriesPage() {
   const { showToast } = useToast();
-  const [categories, setCategories] = useState<ICategory[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<ICategory[]>(() => {
+    return getCachedData<ICategory[]>("admin_categories") || [];
+  });
+  const [loading, setLoading] = useState(() => {
+    return !getCachedData<ICategory[]>("admin_categories");
+  });
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<ICategory | null>(null);
@@ -26,6 +31,7 @@ export default function AdminCategoriesPage() {
       const data = await res.json();
       if (data.success && data.categories) {
         setCategories(data.categories);
+        setCachedData("admin_categories", data.categories);
       }
     } catch (e) {
       console.error(e);
@@ -83,6 +89,7 @@ export default function AdminCategoriesPage() {
       const res = await fetch(`/api/categories/${id}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
+        invalidateCache("admin_categories");
         showToast("Category deleted ✓");
         fetchCategories();
       }
@@ -124,6 +131,7 @@ export default function AdminCategoriesPage() {
         throw new Error(data.message || "Failed to save category");
       }
 
+      invalidateCache("admin_categories");
       showToast(editingCategory ? "Category updated! ✓" : "Category created! ✓");
       setModalOpen(false);
       fetchCategories();

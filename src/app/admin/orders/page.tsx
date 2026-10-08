@@ -21,13 +21,21 @@ import {
   X,
   Copy,
   Printer,
+  Banknote,
 } from "lucide-react";
+import { getCachedData, setCachedData, invalidateCache } from "@/lib/client-cache";
 
 export default function AdminOrdersPage() {
   const { showToast } = useToast();
-  const [orders, setOrders] = useState<IOrder[]>([]);
-  const [settings, setSettings] = useState<IRestaurantSettings | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [orders, setOrders] = useState<IOrder[]>(() => {
+    return getCachedData<IOrder[]>("admin_orders") || [];
+  });
+  const [settings, setSettings] = useState<IRestaurantSettings | null>(() => {
+    return getCachedData<IRestaurantSettings>("admin_settings") || null;
+  });
+  const [loading, setLoading] = useState(() => {
+    return !getCachedData<IOrder[]>("admin_orders");
+  });
   const [, startTransition] = useTransition();
 
   // Filters
@@ -48,6 +56,9 @@ export default function AdminOrdersPage() {
       const data = await res.json();
       if (data.success && data.orders) {
         setOrders(data.orders);
+        if (statusFilter === "ALL" && !searchQuery) {
+          setCachedData("admin_orders", data.orders);
+        }
       }
     } catch (e) {
       console.error("Error fetching admin orders:", e);
@@ -61,10 +72,47 @@ export default function AdminOrdersPage() {
     fetch("/api/settings")
       .then((r) => r.json())
       .then((d) => {
-        if (d.success) setSettings(d.settings);
+        if (d.success) {
+          setSettings(d.settings);
+          setCachedData("admin_settings", d.settings);
+        }
       })
       .catch((e) => console.error(e));
   }, [fetchOrders]);
+
+  const handleUpdatePaymentStatus = async (orderId: string, newPaymentStatus: "PAID" | "PENDING") => {
+    setUpdatingStatus(true);
+    try {
+      const res = await fetch(`/api/orders/${orderId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paymentStatus: newPaymentStatus }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to update payment status");
+      }
+
+      showToast(
+        newPaymentStatus === "PAID"
+          ? "Payment marked as Complete (PAID) ✓"
+          : "Payment status set to Pending"
+      );
+      invalidateCache("admin_orders");
+      invalidateCache("admin_payments");
+      startTransition(() => {
+        setSelectedOrder(data.order);
+        setOrders((prev) =>
+          prev.map((o) => (o._id === data.order._id ? data.order : o))
+        );
+      });
+    } catch (err: unknown) {
+      const error = err as Error;
+      showToast(error.message || "Payment status update error");
+    } finally {
+      setUpdatingStatus(false);
+    }
+  };
 
   const handleUpdateStatus = async (orderId: string, newStatus: OrderStatus) => {
     setUpdatingStatus(true);
@@ -398,6 +446,56 @@ export default function AdminOrdersPage() {
                   <span>Cancel Order</span>
                 </button>
               </div>
+            </div>
+
+            {/* Payment Collection & Status Bar */}
+            <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-[#fbf7ef] border border-[#e9e1d4]">
+              <div className="flex items-center gap-2">
+                <span className="text-xs uppercase font-black text-[#102a43]">
+                  Payment Status:
+                </span>
+                <span
+                  className={`text-xs font-black px-2.5 py-1 rounded-full flex items-center gap-1.5 ${
+                    selectedOrder.paymentStatus === "PAID"
+                      ? "bg-green-100 text-green-800 border border-green-300"
+                      : "bg-amber-100 text-amber-800 border border-amber-300"
+                  }`}
+                >
+                  {selectedOrder.paymentStatus === "PAID" ? (
+                    <>
+                      <CheckCircle className="w-3.5 h-3.5 text-green-700" />
+                      <span>Complete Payment (PAID)</span>
+                    </>
+                  ) : (
+                    <span>Pending Payment</span>
+                  )}
+                </span>
+                <span className="text-[11px] text-[#6c7b87]">
+                  • {selectedOrder.paymentMethod}
+                </span>
+              </div>
+
+              {selectedOrder.paymentStatus !== "PAID" ? (
+                <button
+                  type="button"
+                  disabled={updatingStatus}
+                  onClick={() => handleUpdatePaymentStatus(selectedOrder._id, "PAID")}
+                  className="btn-dhaba bg-[#2d7a52] hover:bg-[#236342] text-white py-2 px-3.5 text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all"
+                  title="Mark payment as received and complete"
+                >
+                  <Banknote className="w-4 h-4" />
+                  <span>Get Payment</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  disabled={updatingStatus}
+                  onClick={() => handleUpdatePaymentStatus(selectedOrder._id, "PENDING")}
+                  className="text-[11px] text-[#9a6714] hover:underline font-semibold"
+                >
+                  Mark as Pending
+                </button>
+              )}
             </div>
 
             {/* Customer & Address Details */}

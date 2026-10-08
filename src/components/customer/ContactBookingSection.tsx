@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { IRestaurantSettings } from "@/types";
 import { buildWhatsAppUrl } from "@/lib/whatsapp/message-builder";
 import { CheckCircle2, MessageSquare } from "lucide-react";
+import { orderAlert } from "@/lib/audio";
 
 interface ContactBookingSectionProps {
   settings?: IRestaurantSettings | null;
@@ -67,6 +68,9 @@ export function ContactBookingSection({ settings }: ContactBookingSectionProps) 
         .join("\n");
 
       const waUrl = buildWhatsAppUrl(whatsappNumber, bookingText);
+
+      // Play audible confirmation alarm/chime for table booking
+      orderAlert.playOrderChime();
 
       setSuccessBooking({
         id: data.booking?._id || "booked",

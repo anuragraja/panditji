@@ -7,6 +7,8 @@ import { Bell, ShieldCheck, Volume2, VolumeX, Menu } from "lucide-react";
 import { orderAlert } from "@/lib/audio";
 import { IOrder } from "@/types";
 
+import { getCachedData, setCachedData } from "@/lib/client-cache";
+
 interface AdminTopbarProps {
   onToggleSidebar?: () => void;
 }
@@ -14,7 +16,13 @@ interface AdminTopbarProps {
 export function AdminTopbar({ onToggleSidebar }: AdminTopbarProps) {
   const { user } = useAuth();
   const [isMuted, setIsMuted] = useState(false);
-  const [pendingCount, setPendingCount] = useState(0);
+  const [pendingCount, setPendingCount] = useState(() => {
+    const cached = getCachedData<IOrder[]>("admin_orders");
+    if (cached) {
+      return cached.filter((o: IOrder) => o.orderStatus === "PENDING").length;
+    }
+    return 0;
+  });
 
   // Initialize sound mute state
   useEffect(() => {
@@ -37,6 +45,7 @@ export function AdminTopbar({ onToggleSidebar }: AdminTopbarProps) {
         const data = await res.json();
 
         if (data.success && Array.isArray(data.orders)) {
+          setCachedData("admin_orders", data.orders);
           const count = data.orders.filter(
             (o: IOrder) => o.orderStatus === "PENDING"
           ).length;

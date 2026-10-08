@@ -6,11 +6,17 @@ import { formatDate } from "@/lib/utils";
 import { useToast } from "@/context/ToastContext";
 import { buildWhatsAppUrl } from "@/lib/whatsapp/message-builder";
 import { Check, X, MessageSquare, Calendar, Users, Phone } from "lucide-react";
+import { getCachedData, setCachedData, invalidateCache } from "@/lib/client-cache";
+import { orderAlert } from "@/lib/audio";
 
 export default function AdminBookingsPage() {
   const { showToast } = useToast();
-  const [bookings, setBookings] = useState<IBooking[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [bookings, setBookings] = useState<IBooking[]>(() => {
+    return getCachedData<IBooking[]>("admin_bookings") || [];
+  });
+  const [loading, setLoading] = useState(() => {
+    return !getCachedData<IBooking[]>("admin_bookings");
+  });
 
   const fetchBookings = useCallback(async () => {
     try {
@@ -18,6 +24,7 @@ export default function AdminBookingsPage() {
       const data = await res.json();
       if (data.success && data.bookings) {
         setBookings(data.bookings);
+        setCachedData("admin_bookings", data.bookings);
       }
     } catch (e) {
       console.error(e);
@@ -31,6 +38,14 @@ export default function AdminBookingsPage() {
   }, [fetchBookings]);
 
   const handleUpdateStatus = async (id: string, newStatus: BookingStatus) => {
+    // If confirming or rejecting, stop alarm immediately
+    orderAlert.stopAlarm();
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("pj_booking_confirmed", { detail: { bookingId: id } })
+      );
+    }
+
     try {
       const res = await fetch(`/api/bookings/${id}`, {
         method: "PATCH",
@@ -39,6 +54,7 @@ export default function AdminBookingsPage() {
       });
       const data = await res.json();
       if (data.success) {
+        invalidateCache("admin_bookings");
         showToast(`Booking marked as ${newStatus} ✓`);
         fetchBookings();
       }

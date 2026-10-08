@@ -2,24 +2,59 @@
 
 import React, { useState, useEffect } from "react";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
-import { CreditCard, Banknote, QrCode } from "lucide-react";
+import { CreditCard, Banknote, QrCode, CheckCircle } from "lucide-react";
 import { IOrder } from "@/types";
+import { getCachedData, setCachedData, invalidateCache } from "@/lib/client-cache";
+import { useToast } from "@/context/ToastContext";
 
 export default function AdminPaymentsPage() {
-  const [orders, setOrders] = useState<IOrder[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { showToast } = useToast();
+  const [orders, setOrders] = useState<IOrder[]>(() => {
+    return getCachedData<IOrder[]>("admin_payments") || [];
+  });
+  const [loading, setLoading] = useState(() => {
+    return !getCachedData<IOrder[]>("admin_payments");
+  });
+
+  const fetchPayments = async () => {
+    try {
+      const res = await fetch("/api/orders");
+      const d = await res.json();
+      if (d.success && d.orders) {
+        setOrders(d.orders);
+        setCachedData("admin_payments", d.orders);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    fetch("/api/orders")
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.success && d.orders) {
-          setOrders(d.orders);
-        }
-      })
-      .catch((e) => console.error(e))
-      .finally(() => setLoading(false));
+    fetchPayments();
   }, []);
+
+  const handleMarkPaymentComplete = async (orderId: string) => {
+    try {
+      const res = await fetch(`/api/orders/${orderId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paymentStatus: "PAID" }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast("Payment marked as Complete (PAID) ✓");
+        invalidateCache("admin_payments");
+        invalidateCache("admin_orders");
+        setOrders((prev) =>
+          prev.map((o) => (o._id === orderId ? { ...o, paymentStatus: "PAID" } : o))
+        );
+      }
+    } catch {
+      showToast("Error updating payment");
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -50,7 +85,7 @@ export default function AdminPaymentsPage() {
                   <th className="py-3.5 px-4">Customer</th>
                   <th className="py-3.5 px-4">Payment Method</th>
                   <th className="py-3.5 px-4">Amount</th>
-                  <th className="py-3.5 px-4">Status</th>
+                  <th className="py-3.5 px-4">Payment Status</th>
                   <th className="py-3.5 px-4">Transaction Date</th>
                 </tr>
               </thead>
@@ -84,15 +119,27 @@ export default function AdminPaymentsPage() {
                       {formatCurrency(o.total)}
                     </td>
                     <td className="py-3 px-4">
-                      <span
-                        className={`text-[10px] font-black px-2.5 py-1 rounded-full ${
-                          o.paymentStatus === "PAID"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-amber-100 text-amber-800"
-                        }`}
-                      >
-                        {o.paymentStatus}
-                      </span>
+                      {o.paymentStatus === "PAID" ? (
+                        <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-green-100 text-green-800 border border-green-300 inline-flex items-center gap-1">
+                          <CheckCircle className="w-3 h-3 text-green-700" />
+                          <span>Complete Payment (PAID)</span>
+                        </span>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                            Pending
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleMarkPaymentComplete(o._id)}
+                            className="btn-dhaba bg-[#2d7a52] hover:bg-[#236342] text-white py-1 px-2.5 text-[10px] font-bold flex items-center gap-1 shadow-sm active:scale-95"
+                            title="Get Payment and mark complete"
+                          >
+                            <Banknote className="w-3 h-3" />
+                            <span>Get Payment</span>
+                          </button>
+                        </div>
+                      )}
                     </td>
                     <td className="py-3 px-4 text-[#6c7b87]">
                       {formatDateTime(o.createdAt)}

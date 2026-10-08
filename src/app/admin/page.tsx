@@ -24,6 +24,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+import { getCachedData, setCachedData } from "@/lib/client-cache";
+
 interface StatsData {
   todaysOrdersCount: number;
   todaysRevenue: number;
@@ -36,9 +38,15 @@ interface StatsData {
 }
 
 export default function AdminDashboardPage() {
-  const [stats, setStats] = useState<StatsData | null>(null);
-  const [chartData, setChartData] = useState<Array<{ date: string; revenue: number }>>([]);
-  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<StatsData | null>(() => {
+    return getCachedData<StatsData>("admin_stats") || null;
+  });
+  const [chartData, setChartData] = useState<Array<{ date: string; revenue: number }>>(() => {
+    return getCachedData<Array<{ date: string; revenue: number }>>("admin_chart") || [];
+  });
+  const [loading, setLoading] = useState(() => {
+    return !getCachedData<StatsData>("admin_stats");
+  });
 
   useEffect(() => {
     Promise.all([
@@ -48,9 +56,11 @@ export default function AdminDashboardPage() {
       .then(([statsRes, reportsRes]) => {
         if (statsRes.success) {
           setStats(statsRes.stats);
+          setCachedData("admin_stats", statsRes.stats);
         }
         if (reportsRes.success && reportsRes.report) {
           setChartData(reportsRes.report.chartData);
+          setCachedData("admin_chart", reportsRes.report.chartData);
         }
       })
       .catch((err) => console.error("Error loading dashboard data:", err))

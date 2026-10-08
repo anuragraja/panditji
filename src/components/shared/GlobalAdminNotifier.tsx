@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import { orderAlert } from "@/lib/audio";
-import { IOrder } from "@/types";
+import { IOrder, IBooking } from "@/types";
 import { formatCurrency } from "@/lib/utils";
 import {
   Volume2,
@@ -17,6 +17,7 @@ import {
   Loader2,
   BellRing,
   Bell,
+  Calendar,
 } from "lucide-react";
 
 export function GlobalAdminNotifier() {
@@ -25,22 +26,30 @@ export function GlobalAdminNotifier() {
   const { showToast } = useToast();
 
   const [activeAlert, setActiveAlert] = useState<IOrder | null>(null);
+  const [activeBookingAlert, setActiveBookingAlert] = useState<IBooking | null>(null);
   const [isConfirming, setIsConfirming] = useState(false);
+  const [isConfirmingBooking, setIsConfirmingBooking] = useState(false);
   const [isSilenced, setIsSilenced] = useState(false);
   const [showPermissionBanner, setShowPermissionBanner] = useState(false);
 
   const acknowledgedOrderIdsRef = useRef<Set<string>>(new Set());
+  const acknowledgedBookingIdsRef = useRef<Set<string>>(new Set());
   const workerRef = useRef<Worker | null>(null);
   const isAdmin = user && user.role === "ADMIN";
 
-  // Hydrate acknowledged order IDs from sessionStorage
+  // Hydrate acknowledged order IDs & booking IDs from sessionStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
       try {
-        const stored = sessionStorage.getItem("pj_ack_order_ids");
-        if (stored) {
-          const list: string[] = JSON.parse(stored);
+        const storedOrders = sessionStorage.getItem("pj_ack_order_ids");
+        if (storedOrders) {
+          const list: string[] = JSON.parse(storedOrders);
           list.forEach((id) => acknowledgedOrderIdsRef.current.add(id));
+        }
+        const storedBookings = sessionStorage.getItem("pj_ack_booking_ids");
+        if (storedBookings) {
+          const list: string[] = JSON.parse(storedBookings);
+          list.forEach((id) => acknowledgedBookingIdsRef.current.add(id));
         }
       } catch {
         // ignore
@@ -55,6 +64,20 @@ export function GlobalAdminNotifier() {
         sessionStorage.setItem(
           "pj_ack_order_ids",
           JSON.stringify(Array.from(acknowledgedOrderIdsRef.current))
+        );
+      } catch {
+        // ignore
+      }
+    }
+  }, []);
+
+  const markBookingAcknowledged = useCallback((bookingId: string) => {
+    acknowledgedBookingIdsRef.current.add(bookingId);
+    if (typeof window !== "undefined") {
+      try {
+        sessionStorage.setItem(
+          "pj_ack_booking_ids",
+          JSON.stringify(Array.from(acknowledgedBookingIdsRef.current))
         );
       } catch {
         // ignore
@@ -139,7 +162,7 @@ export function GlobalAdminNotifier() {
     }
   };
 
-  // 4. Listen to in-app order confirmation events across other components / tabs
+  // 4. Listen to in-app order & booking confirmation events across other components / tabs
   useEffect(() => {
     const handleOrderConfirmed = (e: Event) => {
       const customEvent = e as CustomEvent<{ orderId?: string }>;
@@ -147,21 +170,37 @@ export function GlobalAdminNotifier() {
       if (confirmedId) {
         markOrderAcknowledged(confirmedId);
         if (activeAlert?._id === confirmedId) {
-          orderAlert.stopAlarm();
+          if (!activeBookingAlert) orderAlert.stopAlarm();
           setActiveAlert(null);
         }
       } else {
-        orderAlert.stopAlarm();
+        if (!activeBookingAlert) orderAlert.stopAlarm();
+      }
+    };
+
+    const handleBookingConfirmed = (e: Event) => {
+      const customEvent = e as CustomEvent<{ bookingId?: string }>;
+      const confirmedId = customEvent.detail?.bookingId;
+      if (confirmedId) {
+        markBookingAcknowledged(confirmedId);
+        if (activeBookingAlert?._id === confirmedId) {
+          if (!activeAlert) orderAlert.stopAlarm();
+          setActiveBookingAlert(null);
+        }
+      } else {
+        if (!activeAlert) orderAlert.stopAlarm();
       }
     };
 
     window.addEventListener("pj_order_confirmed", handleOrderConfirmed);
+    window.addEventListener("pj_booking_confirmed", handleBookingConfirmed);
     return () => {
       window.removeEventListener("pj_order_confirmed", handleOrderConfirmed);
+      window.removeEventListener("pj_booking_confirmed", handleBookingConfirmed);
     };
-  }, [activeAlert, markOrderAcknowledged]);
+  }, [activeAlert, activeBookingAlert, markOrderAcknowledged, markBookingAcknowledged]);
 
-  // 5. Trigger System Notification on Mobile & Desktop
+  // 5. Trigger System Notification on Mobile & Desktop for Orders
   const triggerNativeNotification = useCallback(
     async (order: IOrder) => {
       if (typeof window === "undefined") return;
@@ -227,64 +266,166 @@ export function GlobalAdminNotifier() {
     [router]
   );
 
-  // 6. Global background order checker (using unthrottled Web Worker ticker for background tabs)
+  // Trigger Native Notification for Table Booking
+  const triggerNativeBookingNotification = useCallback(
+    async (booking: IBooking) => {
+      if (typeof window === "undefined") return;
+
+      if ("serviceWorker" in navigator) {
+        try {
+          const reg = await navigator.serviceWorker.ready;
+          if (reg && reg.showNotification) {
+            const swOptions: NotificationOptions & Record<string, unknown> = {
+              body: `Table reservation request for ${booking.guests} on ${booking.date} (${booking.phone})`,
+              icon: "/images/logo.png",
+              badge: "/images/logo.png",
+              vibrate: [600, 250, 600, 250, 1000, 300, 1200],
+              tag: `booking-${booking._id}`,
+              renotify: true,
+              requireInteraction: true,
+              data: {
+                bookingId: booking._id,
+              },
+              actions: [
+                { action: "confirm", title: "✅ Confirm (Sound Off)" },
+                { action: "open", title: "👀 View Bookings" },
+              ],
+            };
+
+            await reg.showNotification(
+              `📅 New Table Booking! ${booking.name}`,
+              swOptions as NotificationOptions
+            );
+            return;
+          }
+        } catch (e) {
+          console.warn("SW showNotification error, attempting window fallback:", e);
+        }
+      }
+
+      if ("Notification" in window && Notification.permission === "granted") {
+        try {
+          const notif = new Notification(`📅 New Table Booking! ${booking.name}`, {
+            body: `Reservation for ${booking.guests} on ${booking.date} (${booking.phone})`,
+            icon: "/images/logo.png",
+            tag: `booking-${booking._id}`,
+            requireInteraction: true,
+          });
+          notif.onclick = () => {
+            orderAlert.stopAlarm();
+            window.focus();
+            router.push("/admin/bookings");
+          };
+        } catch {
+          // ignore
+        }
+      }
+    },
+    [router]
+  );
+
+  // 6. Global background order & booking checker (using unthrottled Web Worker ticker for background tabs)
   useEffect(() => {
     if (!isAdmin) {
       orderAlert.stopAlarm();
       setActiveAlert(null);
+      setActiveBookingAlert(null);
       return;
     }
 
     let isMounted = true;
 
-    async function checkNewOrders() {
+    async function checkNewOrdersAndBookings() {
       try {
-        const res = await fetch("/api/orders");
-        if (!res.ok) return;
-        const data = await res.json();
+        const [ordersRes, bookingsRes] = await Promise.all([
+          fetch("/api/orders"),
+          fetch("/api/bookings"),
+        ]);
 
-        if (data.success && Array.isArray(data.orders)) {
-          const orders: IOrder[] = data.orders;
+        if (ordersRes.ok) {
+          const data = await ordersRes.json();
+          if (data.success && Array.isArray(data.orders)) {
+            const orders: IOrder[] = data.orders;
 
-          // If current active alert order has been confirmed/cancelled elsewhere, silence & dismiss
-          if (activeAlert) {
-            const currentActive = orders.find((o) => o._id === activeAlert._id);
-            if (!currentActive || currentActive.orderStatus !== "PENDING") {
-              orderAlert.stopAlarm();
-              if (isMounted) {
-                setActiveAlert(null);
+            // If current active alert order has been confirmed/cancelled elsewhere, silence & dismiss
+            if (activeAlert) {
+              const currentActive = orders.find((o) => o._id === activeAlert._id);
+              if (!currentActive || currentActive.orderStatus !== "PENDING") {
+                if (!activeBookingAlert) orderAlert.stopAlarm();
+                if (isMounted) {
+                  setActiveAlert(null);
+                }
+                return;
               }
-              return;
+            }
+
+            // Look for any unacknowledged PENDING order
+            const unhandledOrder = orders.find(
+              (o) =>
+                o.orderStatus === "PENDING" &&
+                !acknowledgedOrderIdsRef.current.has(o._id)
+            );
+
+            if (unhandledOrder) {
+              if (isMounted) {
+                setActiveAlert(unhandledOrder);
+                setIsSilenced(false);
+
+                // Ring repeating kitchen alarm until confirmed
+                orderAlert.startAlarm();
+
+                // Trigger native device notification with vibration & confirm action
+                triggerNativeNotification(unhandledOrder);
+                return;
+              }
             }
           }
+        }
 
-          // Look for any unacknowledged PENDING order
-          const unhandledOrder = orders.find(
-            (o) =>
-              o.orderStatus === "PENDING" &&
-              !acknowledgedOrderIdsRef.current.has(o._id)
-          );
+        // Check for new table reservations
+        if (bookingsRes.ok) {
+          const bData = await bookingsRes.json();
+          if (bData.success && Array.isArray(bData.bookings)) {
+            const bookings: IBooking[] = bData.bookings;
 
-          if (unhandledOrder) {
-            if (isMounted) {
-              setActiveAlert(unhandledOrder);
-              setIsSilenced(false);
+            if (activeBookingAlert) {
+              const currentActiveB = bookings.find((b) => b._id === activeBookingAlert._id);
+              if (!currentActiveB || currentActiveB.status !== "PENDING") {
+                if (!activeAlert) orderAlert.stopAlarm();
+                if (isMounted) {
+                  setActiveBookingAlert(null);
+                }
+                return;
+              }
+            }
 
-              // Ring repeating kitchen alarm until confirmed
-              orderAlert.startAlarm();
+            const unhandledBooking = bookings.find(
+              (b) =>
+                b.status === "PENDING" &&
+                !acknowledgedBookingIdsRef.current.has(b._id)
+            );
 
-              // Trigger native device notification with vibration & confirm action
-              triggerNativeNotification(unhandledOrder);
+            if (unhandledBooking && !activeAlert && !activeBookingAlert) {
+              if (isMounted) {
+                setActiveBookingAlert(unhandledBooking);
+                setIsSilenced(false);
+
+                // Ring repeating alarm for table booking
+                orderAlert.startAlarm();
+
+                // Trigger native notification
+                triggerNativeBookingNotification(unhandledBooking);
+              }
             }
           }
         }
       } catch (err) {
-        console.error("Global admin order poller error:", err);
+        console.error("Global admin order/booking poller error:", err);
       }
     }
 
     // Run immediate check on mount / login
-    checkNewOrders();
+    checkNewOrdersAndBookings();
 
     // Create an inline Web Worker ticker to bypass background tab throttling
     try {
@@ -310,12 +451,12 @@ export function GlobalAdminNotifier() {
       workerRef.current = worker;
 
       worker.onmessage = () => {
-        checkNewOrders();
+        checkNewOrdersAndBookings();
       };
       worker.postMessage("start");
     } catch {
       // Fallback to standard setInterval if Web Worker is restricted
-      const interval = setInterval(checkNewOrders, 5000);
+      const interval = setInterval(checkNewOrdersAndBookings, 5000);
       return () => {
         isMounted = false;
         clearInterval(interval);
@@ -325,7 +466,7 @@ export function GlobalAdminNotifier() {
     // Listen to tab visibility changes to run an instant sync when switching back
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
-        checkNewOrders();
+        checkNewOrdersAndBookings();
       }
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
@@ -339,7 +480,7 @@ export function GlobalAdminNotifier() {
         workerRef.current = null;
       }
     };
-  }, [isAdmin, activeAlert, triggerNativeNotification]);
+  }, [isAdmin, activeAlert, activeBookingAlert, triggerNativeNotification, triggerNativeBookingNotification]);
 
   // Action: Confirm order directly from notification box and turn sound off
   const handleConfirmOrder = async () => {
@@ -403,9 +544,66 @@ export function GlobalAdminNotifier() {
     if (activeAlert) {
       markOrderAcknowledged(activeAlert._id);
     }
-    orderAlert.stopAlarm();
+    if (!activeBookingAlert) orderAlert.stopAlarm();
     setActiveAlert(null);
     router.push("/admin/orders");
+  };
+
+  // Action: Confirm table booking directly from notification box and turn sound off
+  const handleConfirmBooking = async () => {
+    if (!activeBookingAlert) return;
+    setIsConfirmingBooking(true);
+
+    if (!activeAlert) orderAlert.stopAlarm();
+    setIsSilenced(true);
+
+    try {
+      const res = await fetch(`/api/bookings/${activeBookingAlert._id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "CONFIRMED" }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to confirm table booking");
+      }
+
+      showToast(`Table booking for ${activeBookingAlert.name} confirmed! Sound stopped.`);
+      markBookingAcknowledged(activeBookingAlert._id);
+
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("pj_booking_confirmed", {
+            detail: { bookingId: activeBookingAlert._id },
+          })
+        );
+      }
+
+      setActiveBookingAlert(null);
+    } catch (err: unknown) {
+      const error = err as Error;
+      showToast(error.message || "Failed to confirm table booking");
+    } finally {
+      setIsConfirmingBooking(false);
+    }
+  };
+
+  const handleDismissBooking = () => {
+    if (activeBookingAlert) {
+      markBookingAcknowledged(activeBookingAlert._id);
+    }
+    if (!activeAlert) orderAlert.stopAlarm();
+    setActiveBookingAlert(null);
+  };
+
+  const handleOpenBooking = () => {
+    if (activeBookingAlert) {
+      markBookingAcknowledged(activeBookingAlert._id);
+    }
+    if (!activeAlert) orderAlert.stopAlarm();
+    setActiveBookingAlert(null);
+    router.push("/admin/bookings");
   };
 
   if (!isAdmin) return null;
@@ -557,6 +755,118 @@ export function GlobalAdminNotifier() {
               <button
                 type="button"
                 onClick={handleOpenOrder}
+                className="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-[#d99a2b] hover:bg-[#b87f1c] text-[#102a43] font-black text-xs shadow-md transition-all active:scale-95"
+              >
+                <span>View</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Floating High-Impact Notification Box for Table Bookings */}
+      {!activeAlert && activeBookingAlert && (
+        <div
+          role="alert"
+          aria-live="assertive"
+          className="fixed top-5 right-4 sm:right-6 z-[99999] max-w-md w-[calc(100%-2rem)] bg-[#102a43] text-white p-5 rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.65)] border-2 border-[#d99a2b] animate-in slide-in-from-top-4 duration-300 backdrop-blur-md"
+        >
+          {/* Top Bar */}
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-[#d99a2b] text-[#102a43] flex items-center justify-center font-black text-2xl shadow-lg shrink-0 animate-bounce">
+                <Calendar className="w-6 h-6 text-[#102a43]" />
+              </div>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-black tracking-widest text-[#f2c35e] uppercase flex items-center gap-1">
+                    <ShieldAlert className="w-3.5 h-3.5 text-[#f2c35e]" />
+                    <span>NEW TABLE RESERVATION</span>
+                  </span>
+                  {!isSilenced && (
+                    <span className="px-1.5 py-0.5 rounded-full bg-red-600 text-white text-[9px] font-black animate-pulse">
+                      ALARM & VIBRATION ON
+                    </span>
+                  )}
+                </div>
+
+                <h4 className="font-serif-dhaba font-bold text-lg text-white leading-tight mt-0.5">
+                  Guest: {activeBookingAlert.name}
+                </h4>
+                <p className="text-xs text-[#cbd8e0] mt-0.5 font-medium">
+                  <span className="text-white font-bold">{activeBookingAlert.guests}</span> • {activeBookingAlert.date} {activeBookingAlert.time ? `(${activeBookingAlert.time})` : ""} • <strong className="text-[#f2c35e]">{activeBookingAlert.phone}</strong>
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleDismissBooking}
+              className="text-gray-400 hover:text-white p-1 rounded-lg transition-colors"
+              title="Dismiss alert and stop sound"
+              aria-label="Dismiss alert and stop sound"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {activeBookingAlert.specialRequest && (
+            <div className="mt-3 py-2 px-3 rounded-xl bg-white/5 border border-white/10 text-xs text-[#dce6ed]">
+              Special request: &quot;{activeBookingAlert.specialRequest}&quot;
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="mt-4 pt-3 border-t border-white/10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+            <button
+              type="button"
+              disabled={isConfirmingBooking}
+              onClick={handleConfirmBooking}
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#2d7a52] hover:bg-[#236342] text-white font-bold text-xs shadow-md transition-all active:scale-95 disabled:opacity-50"
+            >
+              {isConfirmingBooking ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Confirming...</span>
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="w-4 h-4 text-white" />
+                  <span>Confirm (Sound Off)</span>
+                </>
+              )}
+            </button>
+
+            <div className="flex items-center justify-between gap-2">
+              {!isSilenced ? (
+                <button
+                  type="button"
+                  onClick={handleSilenceAlarm}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-[#f2c35e] font-bold text-xs transition-colors"
+                  title="Stop alarm sound"
+                >
+                  <VolumeX className="w-3.5 h-3.5" />
+                  <span>Silence</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsSilenced(false);
+                    orderAlert.playOrderChime();
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-gray-300 font-bold text-xs transition-colors"
+                  title="Replay alarm sound"
+                >
+                  <Volume2 className="w-3.5 h-3.5" />
+                  <span>Replay</span>
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={handleOpenBooking}
                 className="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-[#d99a2b] hover:bg-[#b87f1c] text-[#102a43] font-black text-xs shadow-md transition-all active:scale-95"
               >
                 <span>View</span>

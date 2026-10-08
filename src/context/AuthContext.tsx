@@ -15,8 +15,29 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<IUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<IUser | null>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem("pj_user_session");
+        if (stored) return JSON.parse(stored);
+      } catch {
+        // ignore
+      }
+    }
+    return null;
+  });
+
+  const [isLoading, setIsLoading] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem("pj_user_session");
+        if (stored) return false;
+      } catch {
+        // ignore
+      }
+    }
+    return true;
+  });
 
   const fetchCurrentUser = useCallback(async () => {
     try {
@@ -25,16 +46,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const data = await res.json();
         if (data.success && data.user) {
           setUser(data.user);
+          if (typeof window !== "undefined") {
+            try {
+              localStorage.setItem("pj_user_session", JSON.stringify(data.user));
+            } catch {
+              // ignore
+            }
+          }
           return;
         }
       }
       setUser(null);
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("pj_user_session");
+      }
     } catch {
-      setUser(null);
+      // Don't log out if it was just a temporary network hiccup and cached user exists
+      if (!user) {
+        setUser(null);
+      }
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     fetchCurrentUser();
@@ -42,6 +76,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback((userData: IUser) => {
     setUser(userData);
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem("pj_user_session", JSON.stringify(userData));
+      } catch {
+        // ignore
+      }
+    }
   }, []);
 
   const logout = useCallback(async () => {
@@ -51,6 +92,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error("Logout request error", e);
     } finally {
       setUser(null);
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("pj_user_session");
+      }
       window.location.href = "/";
     }
   }, []);

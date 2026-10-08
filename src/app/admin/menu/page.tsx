@@ -18,17 +18,26 @@ import {
   X,
 } from "lucide-react";
 
+import { getCachedData, setCachedData, invalidateCache } from "@/lib/client-cache";
+
 export default function AdminMenuPage() {
   const { showToast } = useToast();
-  const [items, setItems] = useState<IMenuItem[]>([]);
-  const [categories, setCategories] = useState<ICategory[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [items, setItems] = useState<IMenuItem[]>(() => {
+    return getCachedData<IMenuItem[]>("admin_menu") || [];
+  });
+  const [categories, setCategories] = useState<ICategory[]>(() => {
+    return getCachedData<ICategory[]>("admin_categories") || [];
+  });
+  const [loading, setLoading] = useState(() => {
+    return !getCachedData<IMenuItem[]>("admin_menu");
+  });
   const [search, setSearch] = useState("");
   const [catFilter, setCatFilter] = useState("ALL");
 
   // Modal State
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<IMenuItem | null>(null);
+  const [isComboMode, setIsComboMode] = useState(false);
 
   // Form Fields
   const [name, setName] = useState("");
@@ -69,8 +78,14 @@ export default function AdminMenuPage() {
       const menuData = await menuRes.json();
       const catData = await catRes.json();
 
-      if (menuData.success) setItems(menuData.items);
-      if (catData.success) setCategories(catData.categories);
+      if (menuData.success) {
+        setItems(menuData.items);
+        setCachedData("admin_menu", menuData.items);
+      }
+      if (catData.success) {
+        setCategories(catData.categories);
+        setCachedData("admin_categories", catData.categories);
+      }
     } catch (e) {
       console.error(e);
     } finally {
@@ -84,6 +99,7 @@ export default function AdminMenuPage() {
 
   const openNewItemModal = () => {
     setEditingItem(null);
+    setIsComboMode(false);
     setName("");
     setHindiName("");
     setSlug("");
@@ -106,8 +122,34 @@ export default function AdminMenuPage() {
     setModalOpen(true);
   };
 
+  const openNewComboModal = () => {
+    setEditingItem(null);
+    setIsComboMode(true);
+    setName("Family Meal — Perfect for Sharing");
+    setHindiName("फैमिली मील कॉम्बो");
+    setSlug("family-meal-combo");
+    setDescription("Dal Tadka • Paneer Curry • 4 Butter Rotis • Jeera Rice • Salad");
+    setCategory("Combos");
+    setFoodType("VEG");
+    setBasePrice(449);
+    setDiscountPrice(449);
+    setImage(
+      "https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd7?auto=format&fit=crop&w=900&q=85"
+    );
+    setTag("CHEF'S FAMILY COMBO");
+    setPreparationTime("20-25 mins");
+    setAvailable(true);
+    setFeatured(true);
+    setPopular(true);
+    setTodaySpecial(true);
+    setVariants([]);
+    setAddOns([]);
+    setModalOpen(true);
+  };
+
   const openEditModal = (item: IMenuItem) => {
     setEditingItem(item);
+    setIsComboMode(item.category === "Combos");
     setName(item.name);
     setHindiName(item.hindiName || "");
     setSlug(item.slug);
@@ -137,6 +179,7 @@ export default function AdminMenuPage() {
       });
       const data = await res.json();
       if (data.success) {
+        invalidateCache("admin_menu");
         showToast(
           `"${item.name}" marked ${!item.available ? "Available" : "Unavailable"}`
         );
@@ -154,6 +197,7 @@ export default function AdminMenuPage() {
       const res = await fetch(`/api/menu/${id}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
+        invalidateCache("admin_menu");
         showToast("Dish deleted successfully.");
         fetchData();
       }
@@ -177,6 +221,7 @@ export default function AdminMenuPage() {
       });
       const data = await res.json();
       if (data.success) {
+        invalidateCache("admin_menu");
         showToast(`Duplicated ${item.name} ✓`);
         fetchData();
       }
@@ -255,7 +300,16 @@ export default function AdminMenuPage() {
         throw new Error(data.message || "Failed to save menu item");
       }
 
-      showToast(editingItem ? "Dish updated! ✓" : "New dish added! ✓");
+      invalidateCache("admin_menu");
+      showToast(
+        editingItem
+          ? isComboMode
+            ? "Combo updated! ✓"
+            : "Dish updated! ✓"
+          : isComboMode
+          ? "New combo created! ✓"
+          : "New dish added! ✓"
+      );
       setModalOpen(false);
       fetchData();
     } catch (err: unknown) {
@@ -284,17 +338,27 @@ export default function AdminMenuPage() {
             Menu Management
           </h1>
           <p className="text-xs text-[#6c7b87]">
-            Add dishes, portion variants, prices, add-on options, and toggle stock availability.
+            Add dishes, portion variants, prices, combos, add-on options, and toggle stock availability.
           </p>
         </div>
 
-        <button
-          onClick={openNewItemModal}
-          className="btn-dhaba btn-dhaba-gold py-2.5 px-4 text-xs font-bold flex items-center gap-1.5 shadow-md"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add New Dish</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={openNewComboModal}
+            className="btn-dhaba bg-[#102a43] hover:bg-[#183b5b] text-[#f2c35e] border border-[#d99a2b]/50 py-2.5 px-4 text-xs font-bold flex items-center gap-1.5 shadow-md transition-all active:scale-95"
+          >
+            <Sparkles className="w-4 h-4 text-[#d99a2b]" />
+            <span>Create Combo</span>
+          </button>
+
+          <button
+            onClick={openNewItemModal}
+            className="btn-dhaba btn-dhaba-gold py-2.5 px-4 text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add New Dish</span>
+          </button>
+        </div>
       </div>
 
       {/* Filter and Search Bar */}
@@ -471,9 +535,22 @@ export default function AdminMenuPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between pb-3 border-b border-[#e9e1d4]">
-              <h2 id="dish-form-modal-title" className="font-serif-dhaba font-bold text-xl text-[#102a43]">
-                {editingItem ? "Edit Dish" : "Add New Dish"}
-              </h2>
+              <div className="flex items-center gap-2">
+                <h2 id="dish-form-modal-title" className="font-serif-dhaba font-bold text-xl text-[#102a43]">
+                  {editingItem
+                    ? isComboMode
+                      ? "Edit Meal Combo"
+                      : "Edit Dish"
+                    : isComboMode
+                    ? "Create Meal Combo"
+                    : "Add New Dish"}
+                </h2>
+                {isComboMode && (
+                  <span className="text-[10px] bg-[#d99a2b]/20 text-[#9a6714] font-black px-2 py-0.5 rounded-md uppercase">
+                    Combo Package
+                  </span>
+                )}
+              </div>
               <button
                 onClick={() => setModalOpen(false)}
                 aria-label="Close modal"
@@ -483,16 +560,28 @@ export default function AdminMenuPage() {
               </button>
             </div>
 
+            {isComboMode && (
+              <div className="p-3 rounded-2xl bg-[#102a43] text-white flex items-center gap-2.5">
+                <Sparkles className="w-4 h-4 text-[#f2c35e] shrink-0" />
+                <div className="text-xs">
+                  <b className="text-[#f2c35e] block">Combo Package Builder</b>
+                  <span className="text-[#cbd8e0] text-[11px]">
+                    Configure bundled combos with tag badge, included items list, and special deal price.
+                  </span>
+                </div>
+              </div>
+            )}
+
             <form onSubmit={handleSaveItem} className="space-y-4 text-xs">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-bold text-[#102a43] mb-1">
-                    English Name *
+                    {isComboMode ? "Combo Name / Title *" : "English Name *"}
                   </label>
                   <input
                     required
                     type="text"
-                    placeholder="e.g. Paneer Butter Masala"
+                    placeholder={isComboMode ? "e.g. Family Meal — Perfect for Sharing" : "e.g. Paneer Butter Masala"}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="w-full p-2.5 border border-[#ddd8cf] rounded-xl outline-none"
@@ -505,7 +594,7 @@ export default function AdminMenuPage() {
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. पनीर बटर मसाला"
+                    placeholder={isComboMode ? "e.g. फैमिली मील कॉम्बो" : "e.g. पनीर बटर मसाला"}
                     value={hindiName}
                     onChange={(e) => setHindiName(e.target.value)}
                     className="w-full p-2.5 border border-[#ddd8cf] rounded-xl outline-none"
@@ -515,28 +604,38 @@ export default function AdminMenuPage() {
 
               <div>
                 <label className="block font-bold text-[#102a43] mb-1">
-                  Description *
+                  {isComboMode ? "Dishes Included in Combo *" : "Description *"}
                 </label>
                 <textarea
                   required
                   rows={2}
-                  placeholder="Delicious dish description..."
+                  placeholder={
+                    isComboMode
+                      ? "e.g. Dal Tadka • Paneer Curry • 4 Butter Rotis • Jeera Rice • Salad"
+                      : "Delicious dish description..."
+                  }
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="w-full p-2.5 border border-[#ddd8cf] rounded-xl outline-none"
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                 <div>
                   <label className="block font-bold text-[#102a43] mb-1">
                     Category *
                   </label>
                   <select
                     value={category}
-                    onChange={(e) => setCategory(e.target.value)}
+                    onChange={(e) => {
+                      setCategory(e.target.value);
+                      if (e.target.value === "Combos") setIsComboMode(true);
+                    }}
                     className="w-full p-2.5 border border-[#ddd8cf] rounded-xl outline-none bg-white"
                   >
+                    {!categories.some((c) => c.name === "Combos") && (
+                      <option value="Combos">Combos</option>
+                    )}
                     {categories.map((c) => (
                       <option key={c._id} value={c.name}>
                         {c.name}
@@ -547,7 +646,20 @@ export default function AdminMenuPage() {
 
                 <div>
                   <label className="block font-bold text-[#102a43] mb-1">
-                    Base Price (₹) *
+                    Badge / Tag
+                  </label>
+                  <input
+                    type="text"
+                    placeholder={isComboMode ? "CHEF'S FAMILY COMBO" : "POPULAR"}
+                    value={tag}
+                    onChange={(e) => setTag(e.target.value)}
+                    className="w-full p-2.5 border border-[#ddd8cf] rounded-xl outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-[#102a43] mb-1">
+                    {isComboMode ? "Original Price (₹) *" : "Base Price (₹) *"}
                   </label>
                   <input
                     required
@@ -560,7 +672,7 @@ export default function AdminMenuPage() {
 
                 <div>
                   <label className="block font-bold text-[#102a43] mb-1">
-                    Special Discount Price (₹)
+                    {isComboMode ? "Special Combo Price (₹)" : "Discount Price (₹)"}
                   </label>
                   <input
                     type="number"
@@ -775,7 +887,15 @@ export default function AdminMenuPage() {
                   disabled={saving}
                   className="btn-dhaba btn-dhaba-gold py-2.5 px-5 disabled:opacity-50"
                 >
-                  {saving ? "Saving..." : editingItem ? "Update Dish" : "Create Dish"}
+                  {saving
+                    ? "Saving..."
+                    : editingItem
+                    ? isComboMode
+                      ? "Update Combo"
+                      : "Update Dish"
+                    : isComboMode
+                    ? "Create Combo"
+                    : "Create Dish"}
                 </button>
               </div>
             </form>
