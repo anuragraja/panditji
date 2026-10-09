@@ -16,7 +16,9 @@ interface AdminTopbarProps {
 export function AdminTopbar({ onToggleSidebar }: AdminTopbarProps) {
   const { user } = useAuth();
   const [isMuted, setIsMuted] = useState(false);
-  const [pendingCount, setPendingCount] = useState(() => {
+  const [pendingCount, setPendingCount] = useState<number>(() => {
+    const cachedCount = getCachedData<number>("admin_pending_count");
+    if (typeof cachedCount === "number") return cachedCount;
     const cached = getCachedData<IOrder[]>("admin_orders");
     if (cached) {
       return cached.filter((o: IOrder) => o.orderStatus === "PENDING").length;
@@ -34,36 +36,30 @@ export function AdminTopbar({ onToggleSidebar }: AdminTopbarProps) {
     setIsMuted(muted);
   };
 
-  // Poll for pending orders count for topbar badge (sound is handled globally by GlobalAdminNotifier)
+  // Sync pending orders count with GlobalAdminNotifier shared events without duplicate network polling
   useEffect(() => {
     let isMounted = true;
 
-    async function fetchPendingCount() {
-      try {
-        const res = await fetch("/api/orders");
-        if (!res.ok) return;
-        const data = await res.json();
-
-        if (data.success && Array.isArray(data.orders)) {
-          setCachedData("admin_orders", data.orders);
-          const count = data.orders.filter(
-            (o: IOrder) => o.orderStatus === "PENDING"
-          ).length;
-          if (isMounted) {
-            setPendingCount(count);
-          }
-        }
-      } catch (err) {
-        console.error("Error fetching pending order count in topbar:", err);
+    const handleCountUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent<{ count?: number }>;
+      if (typeof customEvent.detail?.count === "number" && isMounted) {
+        setPendingCount(customEvent.detail.count);
       }
-    }
+    };
 
-    fetchPendingCount();
-    const interval = setInterval(fetchPendingCount, 10000);
+    const handleOrderConfirmed = () => {
+      if (isMounted) {
+        setPendingCount((prev) => Math.max(0, prev - 1));
+      }
+    };
+
+    window.addEventListener("pj_pending_orders_count", handleCountUpdate);
+    window.addEventListener("pj_order_confirmed", handleOrderConfirmed);
 
     return () => {
       isMounted = false;
-      clearInterval(interval);
+      window.removeEventListener("pj_pending_orders_count", handleCountUpdate);
+      window.removeEventListener("pj_order_confirmed", handleOrderConfirmed);
     };
   }, []);
 

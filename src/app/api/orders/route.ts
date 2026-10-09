@@ -297,6 +297,24 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
 
     if (user.role === "ADMIN") {
+      const mode = searchParams.get("mode");
+      if (mode === "summary") {
+        const status = searchParams.get("status");
+        const query: Record<string, unknown> = {};
+        if (status && status !== "ALL") {
+          query.orderStatus = status;
+        }
+
+        const orders = await Order.find(query)
+          .select(
+            "_id orderNumber orderStatus total createdAt customerSnapshot.name items.name items.quantity"
+          )
+          .sort({ createdAt: -1 })
+          .limit(20)
+          .lean();
+        return NextResponse.json({ success: true, orders });
+      }
+
       const status = searchParams.get("status");
       const orderType = searchParams.get("type");
       const search = searchParams.get("search");

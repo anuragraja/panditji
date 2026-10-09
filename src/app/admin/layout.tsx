@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminTopbar } from "@/components/admin/AdminTopbar";
+import { GlobalAdminNotifier } from "@/components/shared/GlobalAdminNotifier";
 
 export default function AdminLayout({
   children,
@@ -41,6 +42,7 @@ export default function AdminLayout({
 
   return (
     <div className="flex min-h-screen bg-[#f7f3eb]">
+      <GlobalAdminNotifier />
       <AdminSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col min-w-0">
         <AdminTopbar onToggleSidebar={() => setSidebarOpen((v) => !v)} />

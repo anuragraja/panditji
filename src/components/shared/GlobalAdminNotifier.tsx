@@ -7,6 +7,7 @@ import { useToast } from "@/context/ToastContext";
 import { orderAlert } from "@/lib/audio";
 import { IOrder, IBooking } from "@/types";
 import { formatCurrency } from "@/lib/utils";
+import { setCachedData } from "@/lib/client-cache";
 import {
   Volume2,
   VolumeX,
@@ -34,7 +35,6 @@ export function GlobalAdminNotifier() {
 
   const acknowledgedOrderIdsRef = useRef<Set<string>>(new Set());
   const acknowledgedBookingIdsRef = useRef<Set<string>>(new Set());
-  const workerRef = useRef<Worker | null>(null);
   const isAdmin = user && user.role === "ADMIN";
 
   // Hydrate acknowledged order IDs & booking IDs from sessionStorage
@@ -338,7 +338,7 @@ export function GlobalAdminNotifier() {
     async function checkNewOrdersAndBookings() {
       try {
         const [ordersRes, bookingsRes] = await Promise.all([
-          fetch("/api/orders"),
+          fetch("/api/orders?mode=summary"),
           fetch("/api/bookings"),
         ]);
 
@@ -346,6 +346,15 @@ export function GlobalAdminNotifier() {
           const data = await ordersRes.json();
           if (data.success && Array.isArray(data.orders)) {
             const orders: IOrder[] = data.orders;
+
+            // Broadcast pending count for AdminTopbar badge
+            const pendingCount = orders.filter((o) => o.orderStatus === "PENDING").length;
+            setCachedData("admin_pending_count", pendingCount);
+            if (typeof window !== "undefined") {
+              window.dispatchEvent(
+                new CustomEvent("pj_pending_orders_count", { detail: { count: pendingCount } })
+              );
+            }
 
             // If current active alert order has been confirmed/cancelled elsewhere, silence & dismiss
             if (activeAlert) {
@@ -427,43 +436,10 @@ export function GlobalAdminNotifier() {
     // Run immediate check on mount / login
     checkNewOrdersAndBookings();
 
-    // Create an inline Web Worker ticker to bypass background tab throttling
-    try {
-      const workerBlob = new Blob(
-        [
-          `
-          let timer = null;
-          self.onmessage = function(e) {
-            if (e.data === 'start') {
-              if (timer) clearInterval(timer);
-              timer = setInterval(() => { self.postMessage('tick'); }, 5000);
-            } else if (e.data === 'stop') {
-              if (timer) clearInterval(timer);
-              timer = null;
-            }
-          };
-        `,
-        ],
-        { type: "application/javascript" }
-      );
-      const workerUrl = URL.createObjectURL(workerBlob);
-      const worker = new Worker(workerUrl);
-      workerRef.current = worker;
+    // Standard interval of ~20 seconds to prevent aggressive background network usage
+    const interval = setInterval(checkNewOrdersAndBookings, 20000);
 
-      worker.onmessage = () => {
-        checkNewOrdersAndBookings();
-      };
-      worker.postMessage("start");
-    } catch {
-      // Fallback to standard setInterval if Web Worker is restricted
-      const interval = setInterval(checkNewOrdersAndBookings, 5000);
-      return () => {
-        isMounted = false;
-        clearInterval(interval);
-      };
-    }
-
-    // Listen to tab visibility changes to run an instant sync when switching back
+    // Listen to tab visibility changes to run an instant sync when switching back to tab
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
         checkNewOrdersAndBookings();
@@ -473,12 +449,8 @@ export function GlobalAdminNotifier() {
 
     return () => {
       isMounted = false;
+      clearInterval(interval);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      if (workerRef.current) {
-        workerRef.current.postMessage("stop");
-        workerRef.current.terminate();
-        workerRef.current = null;
-      }
     };
   }, [isAdmin, activeAlert, activeBookingAlert, triggerNativeNotification, triggerNativeBookingNotification]);
 

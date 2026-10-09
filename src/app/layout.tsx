@@ -3,7 +3,6 @@ import "./globals.css";
 import { ToastProvider } from "@/context/ToastContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
-import { GlobalAdminNotifier } from "@/components/shared/GlobalAdminNotifier";
 
 export const viewport: Viewport = {
   themeColor: "#102a43",
@@ -69,7 +68,6 @@ export default function RootLayout({
         <ToastProvider>
           <AuthProvider>
             <CartProvider>
-              <GlobalAdminNotifier />
               {children}
             </CartProvider>
           </AuthProvider>
