@@ -69,13 +69,13 @@ export default async function TrackOrderPage({ params }: TrackOrderPageProps) {
         </Link>
 
         {/* Status Header Card */}
-        <div className="bg-white rounded-3xl p-6 md:p-8 border border-[#e9e1d4] shadow-sm mb-6">
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[#e9e1d4]">
+        <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 border border-[#e9e1d4] shadow-sm mb-6">
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 sm:pb-6 border-b border-[#e9e1d4]">
             <div>
-              <span className="text-[11px] font-black tracking-widest text-[#d99a2b] uppercase">
+              <span className="text-[10px] sm:text-[11px] font-black tracking-widest text-[#d99a2b] uppercase">
                 LIVE ORDER TRACKING
               </span>
-              <h1 className="font-serif-dhaba font-bold text-2xl md:text-3xl text-[#102a43] mt-1">
+              <h1 className="font-serif-dhaba font-bold text-xl sm:text-2xl md:text-3xl text-[#102a43] mt-1">
                 Order #{order.orderNumber}
               </h1>
               <span className="text-xs text-[#6c7b87]">
@@ -83,9 +83,9 @@ export default async function TrackOrderPage({ params }: TrackOrderPageProps) {
               </span>
             </div>
 
-            <div className="text-right max-sm:text-left">
+            <div className="text-left sm:text-right">
               <span
-                className={`inline-block px-3.5 py-1.5 rounded-full text-xs font-black ${
+                className={`inline-block px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-xs font-black ${
                   isCancelled
                     ? "bg-red-100 text-red-700"
                     : order.orderStatus === "DELIVERED" || order.orderStatus === "COMPLETED"
@@ -114,14 +114,14 @@ export default async function TrackOrderPage({ params }: TrackOrderPageProps) {
             </div>
           ) : (
             /* Timeline Progress */
-            <div className="py-8">
-              <div className="relative pl-6 md:pl-8 space-y-8 before:absolute before:left-[17px] md:before:left-[21px] before:top-3 before:bottom-3 before:w-0.5 before:bg-[#e9e1d4]">
+            <div className="py-6 sm:py-8">
+              <div className="relative pl-6 md:pl-8 space-y-6 sm:space-y-8 before:absolute before:left-[17px] md:before:left-[21px] before:top-3 before:bottom-3 before:w-0.5 before:bg-[#e9e1d4]">
                 {steps.map((step, idx) => {
                   const isDone = currentStepIdx >= idx;
                   const isCurrent = currentStepIdx === idx;
 
                   return (
-                    <div key={step.status} className="relative flex items-start gap-4">
+                    <div key={step.status} className="relative flex items-start gap-3 sm:gap-4">
                       {/* Step Circle */}
                       <div
                         className={`absolute -left-[24px] md:-left-[28px] w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all ${
@@ -135,11 +135,11 @@ export default async function TrackOrderPage({ params }: TrackOrderPageProps) {
                         {isDone ? <Check className="w-4 h-4 stroke-[3]" /> : idx + 1}
                       </div>
 
-                      <div className="pt-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg">{step.icon}</span>
+                      <div className="pt-0.5 sm:pt-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                          <span className="text-base sm:text-lg">{step.icon}</span>
                           <b
-                            className={`text-sm md:text-base font-bold ${
+                            className={`text-xs sm:text-sm md:text-base font-bold ${
                               isCurrent
                                 ? "text-[#d99a2b]"
                                 : isDone
@@ -150,7 +150,7 @@ export default async function TrackOrderPage({ params }: TrackOrderPageProps) {
                             {step.label}
                           </b>
                           {isCurrent && (
-                            <span className="text-[10px] bg-[#d99a2b] text-white font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+                            <span className="text-[9px] sm:text-[10px] bg-[#d99a2b] text-white font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
                               In Progress
                             </span>
                           )}
@@ -158,7 +158,7 @@ export default async function TrackOrderPage({ params }: TrackOrderPageProps) {
 
                         {/* Matching note from status history */}
                         {order.statusHistory && (
-                          <div className="text-xs text-[#6c7b87] mt-0.5">
+                          <div className="text-[11px] sm:text-xs text-[#6c7b87] mt-0.5">
                             {order.statusHistory.find((h) => h.status === step.status)?.note}
                           </div>
                         )}
@@ -171,13 +171,13 @@ export default async function TrackOrderPage({ params }: TrackOrderPageProps) {
           )}
 
           {/* Need help footer */}
-          <div className="pt-4 border-t border-[#e9e1d4] flex items-center justify-between flex-wrap gap-3">
+          <div className="pt-4 border-t border-[#e9e1d4] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <span className="text-xs text-[#6c7b87]">
               Need to contact Pandit Ji Ka Dhaba regarding your food?
             </span>
             <a
               href={`tel:${settings.phone}`}
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#102a43] bg-[#f5ead5] hover:bg-[#d99a2b] hover:text-white px-3.5 py-2 rounded-xl transition-colors"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 text-xs font-bold text-[#102a43] bg-[#f5ead5] hover:bg-[#d99a2b] hover:text-white px-3.5 py-2.5 rounded-xl transition-colors text-center"
             >
               <Phone className="w-3.5 h-3.5" />
               <span>Call Dhaba ({settings.phone})</span>
@@ -186,10 +186,10 @@ export default async function TrackOrderPage({ params }: TrackOrderPageProps) {
         </div>
 
         {/* Order Details & Delivery Summary */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {/* Items */}
-          <div className="bg-white rounded-3xl p-6 border border-[#e9e1d4] shadow-sm">
-            <h3 className="font-serif-dhaba font-bold text-lg text-[#102a43] mb-4 flex items-center gap-2">
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-[#e9e1d4] shadow-sm">
+            <h3 className="font-serif-dhaba font-bold text-base sm:text-lg text-[#102a43] mb-3 sm:mb-4 flex items-center gap-2">
               <Utensils className="w-4 h-4 text-[#d99a2b]" />
               <span>Items in Order</span>
             </h3>
@@ -209,7 +209,7 @@ export default async function TrackOrderPage({ params }: TrackOrderPageProps) {
                       </span>
                     )}
                   </div>
-                  <b className="text-[#102a43]">{formatCurrency(it.subtotal)}</b>
+                  <b className="text-[#102a43] shrink-0 pl-2">{formatCurrency(it.subtotal)}</b>
                 </div>
               ))}
             </div>
@@ -237,7 +237,7 @@ export default async function TrackOrderPage({ params }: TrackOrderPageProps) {
           </div>
 
           {/* Delivery Info */}
-          <div className="bg-white rounded-3xl p-6 border border-[#e9e1d4] shadow-sm space-y-4">
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-[#e9e1d4] shadow-sm space-y-4">
             <h3 className="font-serif-dhaba font-bold text-lg text-[#102a43] flex items-center gap-2">
               {order.orderType === "DELIVERY" ? (
                 <>

@@ -15,10 +15,10 @@ export default async function MenuPage() {
   ]);
 
   return (
-    <div className="bg-[#fbf7ef] min-h-screen py-10">
+    <div className="bg-[#fbf7ef] min-h-screen py-8 sm:py-10">
       <div className="container-dhaba mb-6">
         <div className="kicker">AUTHENTIC DHABA MENU</div>
-        <h1 className="font-serif-dhaba font-extrabold text-4xl text-[#102a43] mt-2">
+        <h1 className="font-serif-dhaba font-extrabold text-2xl sm:text-3xl md:text-4xl text-[#102a43] mt-2">
           Handcrafted With Traditional Flavours
         </h1>
         <p className="text-sm text-[#6c7b87] mt-1">

@@ -23,26 +23,26 @@ export function OfferSection({ comboDish }: OfferSectionProps) {
   const tag = comboDish.tag || "CHEF'S FAMILY COMBO";
 
   return (
-    <section className="bg-[#fbf7ef] pb-[94px]">
+    <section className="bg-[#fbf7ef] pb-14 sm:pb-[94px]">
       <div className="container-dhaba">
-        <div className="rounded-[22px] bg-gradient-to-r from-[#102a43] to-[#183b5b] text-white p-[38px] px-[42px] max-md:p-6 flex justify-between items-center max-md:block shadow-dhaba">
+        <div className="rounded-[22px] bg-gradient-to-r from-[#102a43] to-[#183b5b] text-white p-5 sm:p-8 md:p-[38px] md:px-[42px] flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-dhaba">
           <div>
             <div className="eyebrow text-[#f5d28d]">{tag}</div>
-            <h3 className="font-serif-dhaba font-bold text-[30px] max-sm:text-[24px] mt-[7px]">
+            <h3 className="font-serif-dhaba font-bold text-2xl sm:text-[30px] mt-1.5 leading-snug">
               {comboDish.name}
             </h3>
-            <p className="text-[#c9d5dc] text-[13px] mt-[7px]">
+            <p className="text-[#c9d5dc] text-xs sm:text-[13px] mt-1.5 leading-relaxed">
               {comboDish.description}
             </p>
           </div>
-          <div className="text-right max-md:text-left max-md:mt-[18px]">
+          <div className="text-left md:text-right shrink-0 w-full md:w-auto pt-2 md:pt-0 border-t border-white/10 md:border-none">
             <small className="text-[#c9d5dc] text-xs block">Special price</small>
-            <strong className="block text-[34px] font-bold text-[#f2c35e] mb-[9px]">
+            <strong className="block text-2xl sm:text-[34px] font-bold text-[#f2c35e] mb-2 sm:mb-[9px]">
               ₹{specialPrice}
             </strong>
             <button
               onClick={handleAddCombo}
-              className="btn-dhaba btn-dhaba-gold cursor-pointer"
+              className="w-full sm:w-auto btn-dhaba btn-dhaba-gold cursor-pointer text-center"
             >
               Add Combo
             </button>

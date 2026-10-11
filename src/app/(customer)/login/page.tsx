@@ -56,9 +56,9 @@ function LoginForm() {
   };
 
   return (
-    <div className="bg-[#fbf7ef] min-h-screen py-16 flex items-center justify-center">
+    <div className="bg-[#fbf7ef] min-h-screen py-8 sm:py-16 flex items-center justify-center">
       <div className="container-dhaba max-w-md">
-        <div className="bg-white rounded-3xl p-8 border border-[#e9e1d4] shadow-dhaba">
+        <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-[#e9e1d4] shadow-dhaba">
           <div className="text-center mb-6">
             <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#d99a2b] mx-auto mb-3 shadow-brand bg-white">
               <img

@@ -22,13 +22,13 @@ export function CartDrawer() {
       onClick={closeCart}
     >
       <aside
-        className="w-full max-w-[450px] h-full bg-[#fffdf9] p-[30px] flex flex-col justify-between shadow-2xl overflow-y-auto animate-in slide-in-from-right duration-300"
+        className="w-full max-w-[450px] h-full bg-[#fffdf9] p-4 sm:p-6 md:p-[30px] flex flex-col justify-between shadow-2xl overflow-y-auto animate-in slide-in-from-right duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         <div>
           {/* Header */}
           <div className="flex justify-between items-center pb-2">
-            <h2 id="cart-drawer-title" className="font-serif-dhaba font-bold text-[31px] text-[#102a43]">
+            <h2 id="cart-drawer-title" className="font-serif-dhaba font-bold text-2xl sm:text-[31px] text-[#102a43]">
               Your Cart
             </h2>
             <button

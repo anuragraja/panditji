@@ -105,13 +105,13 @@ export default function CustomerOrdersPage() {
             {orders.map((ord) => (
               <div
                 key={ord._id}
-                className="bg-white rounded-3xl p-6 border border-[#e9e1d4] shadow-sm space-y-4"
+                className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-[#e9e1d4] shadow-sm space-y-4"
               >
                 {/* Order Top Bar */}
                 <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#e9e1d4]">
                   <div>
                     <div className="flex items-center gap-2">
-                      <b className="font-serif-dhaba font-bold text-lg text-[#102a43]">
+                      <b className="font-serif-dhaba font-bold text-base sm:text-lg text-[#102a43]">
                         {ord.orderNumber}
                       </b>
                       <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-[#f5ead5] text-[#9a6714] uppercase">
@@ -124,7 +124,7 @@ export default function CustomerOrdersPage() {
                   </div>
 
                   <div className="text-right">
-                    <span className="font-serif-dhaba font-black text-xl text-[#102a43] block">
+                    <span className="font-serif-dhaba font-black text-lg sm:text-xl text-[#102a43] block">
                       {formatCurrency(ord.total)}
                     </span>
                     <span className="text-[11px] text-[#6c7b87]">
@@ -152,11 +152,11 @@ export default function CustomerOrdersPage() {
                 </div>
 
                 {/* Action buttons */}
-                <div className="pt-3 border-t border-[#e9e1d4] flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex gap-2">
+                <div className="pt-3 border-t border-[#e9e1d4] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                     <button
                       onClick={() => handleReorder(ord)}
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#9a6714] bg-[#f5ead5] hover:bg-[#d99a2b] hover:text-white px-3.5 py-2 rounded-xl transition-all"
+                      className="inline-flex items-center justify-center gap-1.5 text-xs font-bold text-[#9a6714] bg-[#f5ead5] hover:bg-[#d99a2b] hover:text-white px-3.5 py-2 rounded-xl transition-all flex-1 sm:flex-initial"
                     >
                       <Repeat className="w-3.5 h-3.5" />
                       <span>Reorder Dishes</span>
@@ -164,7 +164,7 @@ export default function CustomerOrdersPage() {
 
                     <Link
                       href={`/receipt/${ord.orderNumber}`}
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#102a43] bg-[#fbf7ef] hover:bg-[#eee7da] px-3.5 py-2 rounded-xl border border-[#e9e1d4] transition-colors"
+                      className="inline-flex items-center justify-center gap-1.5 text-xs font-bold text-[#102a43] bg-[#fbf7ef] hover:bg-[#eee7da] px-3.5 py-2 rounded-xl border border-[#e9e1d4] transition-colors flex-1 sm:flex-initial"
                     >
                       <FileText className="w-3.5 h-3.5" />
                       <span>Receipt</span>
@@ -173,7 +173,7 @@ export default function CustomerOrdersPage() {
 
                   <Link
                     href={`/track-order/${ord.orderNumber}`}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-[#102a43] hover:bg-[#183b5b] px-4 py-2 rounded-xl transition-colors"
+                    className="inline-flex items-center justify-center gap-1.5 text-xs font-bold text-white bg-[#102a43] hover:bg-[#183b5b] px-4 py-2 rounded-xl transition-colors w-full sm:w-auto"
                   >
                     <span>Track Status</span>
                     <ArrowRight className="w-3.5 h-3.5" />

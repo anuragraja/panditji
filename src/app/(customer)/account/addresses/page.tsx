@@ -101,14 +101,14 @@ export default function AddressesPage() {
           <span>Back to Account</span>
         </Link>
 
-        <div className="flex items-center justify-between">
-          <h1 className="font-serif-dhaba font-extrabold text-2xl text-[#102a43]">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <h1 className="font-serif-dhaba font-extrabold text-xl sm:text-2xl text-[#102a43]">
             Saved Delivery Addresses
           </h1>
           {!isAdding && (
             <button
               onClick={() => setIsAdding(true)}
-              className="btn-dhaba btn-dhaba-gold py-2 px-3 text-xs font-bold flex items-center gap-1.5"
+              className="btn-dhaba btn-dhaba-gold py-2 px-3 text-xs font-bold flex items-center justify-center gap-1.5 w-full sm:w-auto"
             >
               <Plus className="w-4 h-4" />
               <span>Add New Address</span>
@@ -118,7 +118,7 @@ export default function AddressesPage() {
 
         {/* Add Address Form */}
         {isAdding && (
-          <div className="bg-white rounded-3xl p-6 border border-[#e9e1d4] shadow-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-[#e9e1d4] shadow-sm animate-in fade-in duration-200">
             <h2 className="font-serif-dhaba font-bold text-lg text-[#102a43] mb-4">
               Add New Address
             </h2>
@@ -259,12 +259,12 @@ export default function AddressesPage() {
             No saved addresses. Add your home or office address for 1-click checkout!
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {addresses.map((addr, idx) => (
-              <div
-                key={idx}
-                className="bg-white rounded-2xl p-5 border border-[#e9e1d4] shadow-sm flex flex-col justify-between space-y-3 relative group"
-              >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {addresses.map((addr, idx) => (
+                <div
+                  key={idx}
+                  className="bg-white rounded-2xl p-4 sm:p-5 border border-[#e9e1d4] shadow-sm flex flex-col justify-between space-y-3 relative group"
+                >
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="flex items-center gap-1.5 text-xs font-black text-[#102a43]">

@@ -88,17 +88,17 @@ export default function AdminDashboardPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           <Link
             href="/admin/menu?action=new"
-            className="btn-dhaba btn-dhaba-gold py-2.5 px-3.5 text-xs font-bold flex items-center gap-1.5"
+            className="btn-dhaba btn-dhaba-gold py-2.5 px-3.5 text-xs font-bold flex items-center gap-1.5 flex-1 sm:flex-initial justify-center"
           >
             <Plus className="w-4 h-4" />
             <span>Add Menu Item</span>
           </Link>
           <Link
             href="/admin/orders?status=PENDING"
-            className="btn-dhaba bg-[#102a43] hover:bg-[#183b5b] text-white py-2.5 px-3.5 text-xs font-bold flex items-center gap-1.5"
+            className="btn-dhaba bg-[#102a43] hover:bg-[#183b5b] text-white py-2.5 px-3.5 text-xs font-bold flex items-center gap-1.5 flex-1 sm:flex-initial justify-center"
           >
             <ShoppingBag className="w-4 h-4 text-[#f2c35e]" />
             <span>View New Orders</span>
@@ -107,74 +107,74 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* 6 Key Metric Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3 md:gap-4">
         {/* Today's Orders */}
-        <div className="bg-white rounded-2xl p-4 border border-[#e9e1d4] shadow-sm">
-          <div className="flex items-center justify-between text-[#6c7b87] mb-2">
-            <span className="text-[11px] font-bold">Today&apos;s Orders</span>
-            <ShoppingBag className="w-4 h-4 text-[#102a43]" />
+        <div className="bg-white rounded-2xl p-3 sm:p-4 border border-[#e9e1d4] shadow-sm">
+          <div className="flex items-center justify-between text-[#6c7b87] mb-1.5">
+            <span className="text-[10px] sm:text-[11px] font-bold">Today&apos;s Orders</span>
+            <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#102a43]" />
           </div>
-          <b className="font-serif-dhaba font-bold text-2xl text-[#102a43] block">
+          <b className="font-serif-dhaba font-bold text-xl sm:text-2xl text-[#102a43] block">
             {stats?.todaysOrdersCount || 0}
           </b>
           <span className="text-[10px] text-[#2d7a52] font-semibold">Active today</span>
         </div>
 
         {/* Today's Revenue */}
-        <div className="bg-white rounded-2xl p-4 border border-[#e9e1d4] shadow-sm">
-          <div className="flex items-center justify-between text-[#6c7b87] mb-2">
-            <span className="text-[11px] font-bold">Today&apos;s Revenue</span>
-            <IndianRupee className="w-4 h-4 text-[#d99a2b]" />
+        <div className="bg-white rounded-2xl p-3 sm:p-4 border border-[#e9e1d4] shadow-sm">
+          <div className="flex items-center justify-between text-[#6c7b87] mb-1.5">
+            <span className="text-[10px] sm:text-[11px] font-bold">Today&apos;s Revenue</span>
+            <IndianRupee className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#d99a2b]" />
           </div>
-          <b className="font-serif-dhaba font-bold text-2xl text-[#102a43] block">
+          <b className="font-serif-dhaba font-bold text-lg sm:text-2xl text-[#102a43] block truncate">
             {formatCurrency(stats?.todaysRevenue || 0)}
           </b>
           <span className="text-[10px] text-[#d99a2b] font-semibold">Gross sales</span>
         </div>
 
         {/* Pending Orders */}
-        <div className="bg-white rounded-2xl p-4 border border-[#e9e1d4] shadow-sm">
-          <div className="flex items-center justify-between text-[#6c7b87] mb-2">
-            <span className="text-[11px] font-bold">Pending</span>
-            <Clock className="w-4 h-4 text-orange-500" />
+        <div className="bg-white rounded-2xl p-3 sm:p-4 border border-[#e9e1d4] shadow-sm">
+          <div className="flex items-center justify-between text-[#6c7b87] mb-1.5">
+            <span className="text-[10px] sm:text-[11px] font-bold">Pending</span>
+            <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-500" />
           </div>
-          <b className="font-serif-dhaba font-bold text-2xl text-orange-600 block">
+          <b className="font-serif-dhaba font-bold text-xl sm:text-2xl text-orange-600 block">
             {stats?.pendingOrdersCount || 0}
           </b>
-          <span className="text-[10px] text-orange-600 font-semibold">Needs confirmation</span>
+          <span className="text-[10px] text-orange-600 font-semibold truncate block">Needs confirmation</span>
         </div>
 
         {/* Preparing */}
-        <div className="bg-white rounded-2xl p-4 border border-[#e9e1d4] shadow-sm">
-          <div className="flex items-center justify-between text-[#6c7b87] mb-2">
-            <span className="text-[11px] font-bold">In Kitchen</span>
-            <Flame className="w-4 h-4 text-amber-500" />
+        <div className="bg-white rounded-2xl p-3 sm:p-4 border border-[#e9e1d4] shadow-sm">
+          <div className="flex items-center justify-between text-[#6c7b87] mb-1.5">
+            <span className="text-[10px] sm:text-[11px] font-bold">In Kitchen</span>
+            <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500" />
           </div>
-          <b className="font-serif-dhaba font-bold text-2xl text-amber-600 block">
+          <b className="font-serif-dhaba font-bold text-xl sm:text-2xl text-amber-600 block">
             {stats?.preparingOrdersCount || 0}
           </b>
           <span className="text-[10px] text-amber-600 font-semibold">Being cooked</span>
         </div>
 
         {/* Completed Orders */}
-        <div className="bg-white rounded-2xl p-4 border border-[#e9e1d4] shadow-sm">
-          <div className="flex items-center justify-between text-[#6c7b87] mb-2">
-            <span className="text-[11px] font-bold">Completed</span>
-            <CheckCircle2 className="w-4 h-4 text-green-600" />
+        <div className="bg-white rounded-2xl p-3 sm:p-4 border border-[#e9e1d4] shadow-sm">
+          <div className="flex items-center justify-between text-[#6c7b87] mb-1.5">
+            <span className="text-[10px] sm:text-[11px] font-bold">Completed</span>
+            <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600" />
           </div>
-          <b className="font-serif-dhaba font-bold text-2xl text-green-700 block">
+          <b className="font-serif-dhaba font-bold text-xl sm:text-2xl text-green-700 block">
             {stats?.completedOrdersCount || 0}
           </b>
           <span className="text-[10px] text-green-600 font-semibold">Delivered/Pickup</span>
         </div>
 
         {/* Total Customers */}
-        <div className="bg-white rounded-2xl p-4 border border-[#e9e1d4] shadow-sm">
-          <div className="flex items-center justify-between text-[#6c7b87] mb-2">
-            <span className="text-[11px] font-bold">Registered Guests</span>
-            <Users className="w-4 h-4 text-[#246b9b]" />
+        <div className="bg-white rounded-2xl p-3 sm:p-4 border border-[#e9e1d4] shadow-sm">
+          <div className="flex items-center justify-between text-[#6c7b87] mb-1.5">
+            <span className="text-[10px] sm:text-[11px] font-bold">Registered</span>
+            <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#246b9b]" />
           </div>
-          <b className="font-serif-dhaba font-bold text-2xl text-[#102a43] block">
+          <b className="font-serif-dhaba font-bold text-xl sm:text-2xl text-[#102a43] block">
             {stats?.totalCustomersCount || 0}
           </b>
           <span className="text-[10px] text-[#246b9b] font-semibold">Total accounts</span>
@@ -182,7 +182,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Sales Chart Section */}
-      <div className="bg-white rounded-3xl p-6 border border-[#e9e1d4] shadow-sm">
+      <div className="bg-white rounded-3xl p-4 sm:p-6 border border-[#e9e1d4] shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="font-serif-dhaba font-bold text-lg text-[#102a43]">
@@ -234,7 +234,7 @@ export default function AdminDashboardPage() {
       {/* Two Column Grid: Recent Orders & Alerts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Orders List */}
-        <div className="lg:col-span-2 bg-white rounded-3xl p-6 border border-[#e9e1d4] shadow-sm space-y-4">
+        <div className="lg:col-span-2 bg-white rounded-3xl p-4 sm:p-6 border border-[#e9e1d4] shadow-sm space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-[#e9e1d4]">
             <h2 className="font-serif-dhaba font-bold text-lg text-[#102a43]">
               Recent Orders
@@ -295,7 +295,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Low Stock / Unavailable Items */}
-        <div className="bg-white rounded-3xl p-6 border border-[#e9e1d4] shadow-sm space-y-4">
+        <div className="bg-white rounded-3xl p-4 sm:p-6 border border-[#e9e1d4] shadow-sm space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-[#e9e1d4]">
             <h2 className="font-serif-dhaba font-bold text-lg text-[#102a43] flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-amber-500" />

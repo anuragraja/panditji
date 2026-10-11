@@ -48,11 +48,11 @@ export function FoodDetailModal({ item, onClose }: FoodDetailModalProps) {
       role="dialog"
       aria-modal="true"
       aria-labelledby="food-modal-title"
-      className="fixed inset-0 z-50 bg-[#04111b]/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 bg-[#04111b]/70 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto"
       onClick={onClose}
     >
       <div
-        className="bg-[#fffdf9] max-w-lg w-full rounded-2xl overflow-hidden shadow-2xl border border-[#e9e1d4] animate-in zoom-in-95 duration-200 flex flex-col max-h-[92vh]"
+        className="bg-[#fffdf9] max-w-lg w-full rounded-2xl overflow-hidden shadow-2xl border border-[#e9e1d4] animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header image */}
@@ -199,8 +199,8 @@ export function FoodDetailModal({ item, onClose }: FoodDetailModalProps) {
         </div>
 
         {/* Footer actions */}
-        <div className="p-4 bg-[#fbf7ef] border-t border-[#e9e1d4] flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-[#e9e1d4]">
+        <div className="p-3 sm:p-4 bg-[#fbf7ef] border-t border-[#e9e1d4] flex items-center justify-between gap-2.5 sm:gap-4">
+          <div className="flex items-center gap-1.5 sm:gap-2 bg-white px-2 sm:px-3 py-1.5 rounded-xl border border-[#e9e1d4] shrink-0">
             <button
               onClick={() => setQuantity(Math.max(1, quantity - 1))}
               disabled={quantity <= 1}
@@ -208,7 +208,7 @@ export function FoodDetailModal({ item, onClose }: FoodDetailModalProps) {
             >
               <Minus className="w-3.5 h-3.5" />
             </button>
-            <span className="w-6 text-center font-black text-sm text-[#102a43]">
+            <span className="w-5 sm:w-6 text-center font-black text-xs sm:text-sm text-[#102a43]">
               {quantity}
             </span>
             <button
@@ -222,10 +222,10 @@ export function FoodDetailModal({ item, onClose }: FoodDetailModalProps) {
           <button
             onClick={handleAddToCart}
             disabled={!item.available}
-            className="flex-1 btn-dhaba btn-dhaba-gold py-3 text-sm flex items-center justify-between disabled:opacity-50"
+            className="flex-1 btn-dhaba btn-dhaba-gold py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm flex items-center justify-between gap-2 disabled:opacity-50"
           >
-            <span>Add to Cart</span>
-            <span>{formatCurrency(grandTotal)}</span>
+            <span className="font-bold">Add to Cart</span>
+            <span className="font-black bg-white/20 px-2 py-0.5 rounded-lg shrink-0">{formatCurrency(grandTotal)}</span>
           </button>
         </div>
       </div>

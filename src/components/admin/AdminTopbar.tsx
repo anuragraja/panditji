@@ -64,37 +64,37 @@ export function AdminTopbar({ onToggleSidebar }: AdminTopbarProps) {
   }, []);
 
   return (
-    <header className="h-16 bg-white border-b border-[#e9e1d4] px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-sm">
-      <div className="flex items-center gap-2 sm:gap-3">
+    <header className="h-16 bg-white border-b border-[#e9e1d4] px-3 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+      <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
         {/* Mobile menu toggle */}
         <button
           type="button"
           onClick={onToggleSidebar}
-          className="lg:hidden p-2 text-[#102a43] hover:bg-[#f5ead5] rounded-xl transition-colors"
+          className="lg:hidden p-1.5 sm:p-2 text-[#102a43] hover:bg-[#f5ead5] rounded-xl transition-colors shrink-0"
           aria-label="Open navigation sidebar"
         >
           <Menu className="w-5 h-5" />
         </button>
 
-        <span className="font-serif-dhaba font-bold text-sm text-[#102a43] hidden sm:inline">
+        <span className="font-serif-dhaba font-bold text-sm text-[#102a43] hidden sm:inline truncate">
           Kitchen & Restaurant Management
         </span>
-        <span className="font-serif-dhaba font-bold text-sm text-[#102a43] sm:hidden">
+        <span className="font-serif-dhaba font-bold text-xs sm:text-sm text-[#102a43] sm:hidden truncate">
           Kitchen
         </span>
-        <span className="text-[10px] bg-green-100 text-green-800 font-black px-2 py-0.5 rounded-full flex items-center gap-1">
+        <span className="text-[10px] bg-green-100 text-green-800 font-black px-2 py-0.5 rounded-full flex items-center gap-1 shrink-0">
           <span className="w-1.5 h-1.5 rounded-full bg-green-600 animate-pulse" />
           Live
         </span>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4 shrink-0">
         {/* Sound Alert Toggle */}
         <button
           type="button"
           onClick={handleToggleSound}
           title={isMuted ? "Sound alerts muted. Click to enable." : "Sound alerts active. Click to test / mute."}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+          className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
             isMuted
               ? "bg-gray-100 text-gray-500 border-gray-300 hover:bg-gray-200"
               : "bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100 shadow-sm"
@@ -116,12 +116,12 @@ export function AdminTopbar({ onToggleSidebar }: AdminTopbarProps) {
         {/* Notification Bell */}
         <Link
           href="/admin/orders"
-          className="relative p-2 text-[#6c7b87] hover:text-[#102a43] rounded-lg transition-colors cursor-pointer"
+          className="relative p-1.5 sm:p-2 text-[#6c7b87] hover:text-[#102a43] rounded-lg transition-colors cursor-pointer"
           title="View Orders"
         >
           <Bell className="w-5 h-5" />
           {pendingCount > 0 ? (
-            <span className="absolute top-1 right-1 min-w-[16px] h-4 bg-red-600 text-white text-[9px] font-black rounded-full px-1 flex items-center justify-center animate-pulse">
+            <span className="absolute top-0.5 right-0.5 min-w-[16px] h-4 bg-red-600 text-white text-[9px] font-black rounded-full px-1 flex items-center justify-center animate-pulse">
               {pendingCount}
             </span>
           ) : (
@@ -130,8 +130,8 @@ export function AdminTopbar({ onToggleSidebar }: AdminTopbarProps) {
         </Link>
 
         {/* Admin profile */}
-        <div className="flex items-center gap-3 pl-4 border-l border-[#e9e1d4]">
-          <div className="w-8 h-8 rounded-full bg-[#102a43] text-[#f2c35e] font-serif-dhaba font-bold flex items-center justify-center text-xs">
+        <div className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-4 border-l border-[#e9e1d4]">
+          <div className="w-8 h-8 rounded-full bg-[#102a43] text-[#f2c35e] font-serif-dhaba font-bold flex items-center justify-center text-xs shrink-0">
             {user?.name ? user.name.charAt(0).toUpperCase() : "P"}
           </div>
           <div className="hidden sm:block text-left">

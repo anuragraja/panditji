@@ -14,9 +14,9 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="bg-[#fbf7ef] min-h-screen py-16 flex items-center justify-center">
+    <div className="bg-[#fbf7ef] min-h-screen py-8 sm:py-16 flex items-center justify-center">
       <div className="container-dhaba max-w-md">
-        <div className="bg-white rounded-3xl p-8 border border-[#e9e1d4] shadow-dhaba text-center">
+        <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-[#e9e1d4] shadow-dhaba text-center">
           <Link
             href="/login"
             className="inline-flex items-center gap-1.5 text-xs font-bold text-[#526575] hover:text-[#102a43] mb-6 float-left"

@@ -199,13 +199,13 @@ export default function AdminOrdersPage() {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex gap-2 flex-wrap items-center bg-white p-2 rounded-2xl border border-[#e9e1d4]">
-        <Filter className="w-4 h-4 text-[#6c7b87] ml-2 mr-1" />
+      <div className="flex gap-2 overflow-x-auto no-scrollbar sm:flex-wrap items-center bg-white p-2 rounded-2xl border border-[#e9e1d4]">
+        <Filter className="w-4 h-4 text-[#6c7b87] ml-2 mr-1 shrink-0" />
         {statuses.map((st) => (
           <button
             key={st}
             onClick={() => setStatusFilter(st)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
               statusFilter === st
                 ? "bg-[#102a43] text-white shadow-sm"
                 : "text-[#526575] hover:bg-[#fbf7ef]"
@@ -338,7 +338,7 @@ export default function AdminOrdersPage() {
           onClick={() => setSelectedOrder(null)}
         >
           <div
-            className="bg-white rounded-3xl max-w-2xl w-full p-6 md:p-8 shadow-2xl border border-[#e9e1d4] max-h-[90vh] overflow-y-auto space-y-6"
+            className="bg-white rounded-3xl max-w-2xl w-full p-4 sm:p-6 md:p-8 shadow-2xl border border-[#e9e1d4] max-h-[90vh] overflow-y-auto space-y-5 sm:space-y-6"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Top Header */}
@@ -574,22 +574,22 @@ export default function AdminOrdersPage() {
             </div>
 
             {/* Modal Bottom Actions */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2">
               <a
                 href={getWhatsAppCustomerUrl(selectedOrder)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-dhaba bg-[#25D366] hover:bg-[#20bd5a] text-white py-2.5 px-4 text-xs font-bold flex items-center gap-2"
+                className="btn-dhaba bg-[#25D366] hover:bg-[#20bd5a] text-white py-2.5 px-4 text-xs font-bold flex items-center justify-center gap-2 w-full sm:w-auto"
               >
                 <MessageSquare className="w-4 h-4 fill-current" />
                 <span>Message Customer on WhatsApp</span>
               </a>
 
-              <div className="flex gap-2">
+              <div className="flex gap-2 w-full sm:w-auto">
                 <Link
                   href={`/receipt/${selectedOrder.orderNumber}`}
                   target="_blank"
-                  className="btn-dhaba bg-[#fbf7ef] hover:bg-[#eee7da] text-[#102a43] border border-[#e9e1d4] py-2.5 px-4 text-xs font-bold flex items-center gap-1.5"
+                  className="btn-dhaba bg-[#fbf7ef] hover:bg-[#eee7da] text-[#102a43] border border-[#e9e1d4] py-2.5 px-4 text-xs font-bold flex items-center justify-center gap-1.5 w-full sm:w-auto"
                 >
                   <Printer className="w-4 h-4" />
                   <span>Print Receipt</span>

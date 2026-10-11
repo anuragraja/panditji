@@ -10,18 +10,18 @@ export function TrustStrip() {
 
   return (
     <section className="bg-[#102a43] text-white">
-      <div className="container-dhaba grid grid-cols-4 max-md:grid-cols-2 max-sm:grid-cols-1 py-[26px]">
+      <div className="container-dhaba grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 py-4 sm:py-[22px]">
         {items.map((item, idx) => (
           <div
             key={idx}
-            className={`flex items-center gap-3 px-5 max-md:px-2 max-md:py-2.5 ${
-              idx === 0 ? "pl-0" : ""
-            } ${idx < 3 ? "border-r border-white/10 max-md:border-none" : ""}`}
+            className={`flex items-center gap-2.5 sm:gap-3 p-2.5 sm:px-4 sm:py-2 rounded-xl bg-white/[0.04] lg:bg-transparent ${
+              idx < 3 ? "lg:border-r lg:border-white/10" : ""
+            }`}
           >
-            <span className="text-[27px] select-none">{item.icon}</span>
-            <div>
-              <b className="block text-[13px] font-bold text-white">{item.title}</b>
-              <span className="block text-[11px] text-[#bdcbd4] mt-[3px]">
+            <span className="text-2xl sm:text-[27px] select-none shrink-0">{item.icon}</span>
+            <div className="min-w-0">
+              <b className="block text-xs sm:text-[13px] font-bold text-white truncate">{item.title}</b>
+              <span className="block text-[10px] sm:text-[11px] text-[#bdcbd4] mt-0.5 truncate">
                 {item.desc}
               </span>
             </div>

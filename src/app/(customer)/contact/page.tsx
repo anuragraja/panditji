@@ -13,10 +13,10 @@ export default async function ContactPage() {
 
   return (
     <div className="bg-[#fbf7ef] min-h-screen">
-      <div className="bg-[#102a43] text-white py-14">
+      <div className="bg-[#102a43] text-white py-10 sm:py-14">
         <div className="container-dhaba text-center">
           <div className="kicker text-[#f5d28d] justify-center">REACH OUT TO US</div>
-          <h1 className="font-serif-dhaba font-bold text-4xl mt-2">
+          <h1 className="font-serif-dhaba font-bold text-2xl sm:text-3xl md:text-4xl mt-2">
             We Would Love To Host You
           </h1>
           <p className="text-xs text-[#cbd8e0] mt-2 max-w-lg mx-auto">

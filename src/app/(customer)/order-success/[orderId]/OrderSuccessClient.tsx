@@ -42,30 +42,30 @@ export function OrderSuccessClient({
   };
 
   return (
-    <div className="bg-white rounded-3xl p-8 border border-[#e9e1d4] shadow-dhaba text-center space-y-6">
+    <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-[#e9e1d4] shadow-dhaba text-center space-y-5 sm:space-y-6">
       {/* Icon */}
-      <div className="w-20 h-20 rounded-full bg-[#f5ead5] text-[#2d7a52] flex items-center justify-center mx-auto shadow-inner">
-        <CheckCircle2 className="w-12 h-12 stroke-[2.5]" />
+      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#f5ead5] text-[#2d7a52] flex items-center justify-center mx-auto shadow-inner">
+        <CheckCircle2 className="w-10 h-10 sm:w-12 sm:h-12 stroke-[2.5]" />
       </div>
 
       <div>
-        <span className="text-xs font-black tracking-widest text-[#d99a2b] uppercase">
+        <span className="text-[10px] sm:text-xs font-black tracking-widest text-[#d99a2b] uppercase">
           DHANYAWAD! YOUR ORDER IS SAVED
         </span>
-        <h1 className="font-serif-dhaba font-extrabold text-3xl text-[#102a43] mt-1">
+        <h1 className="font-serif-dhaba font-extrabold text-2xl sm:text-3xl text-[#102a43] mt-1 leading-snug">
           ORDER PLACED SUCCESSFULLY
         </h1>
-        <p className="text-xs text-[#6c7b87] mt-2">
+        <p className="text-xs text-[#6c7b87] mt-1.5">
           Your order has been recorded in our kitchen system.
         </p>
       </div>
 
       {/* Order ID Card */}
-      <div className="bg-[#fbf7ef] p-4 rounded-2xl border border-[#d99a2b]/30 inline-block w-full max-w-sm mx-auto">
-        <span className="text-[11px] text-[#6c7b87] uppercase font-bold block">
+      <div className="bg-[#fbf7ef] p-3.5 sm:p-4 rounded-2xl border border-[#d99a2b]/30 inline-block w-full max-w-sm mx-auto">
+        <span className="text-[10px] sm:text-[11px] text-[#6c7b87] uppercase font-bold block">
           Order ID
         </span>
-        <strong className="font-serif-dhaba font-bold text-2xl text-[#102a43] tracking-wide">
+        <strong className="font-serif-dhaba font-bold text-xl sm:text-2xl text-[#102a43] tracking-wide">
           {order.orderNumber}
         </strong>
         <div className="text-xs font-bold text-[#2d7a52] mt-1">
@@ -80,17 +80,17 @@ export function OrderSuccessClient({
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white py-4 px-6 rounded-2xl font-black text-sm flex items-center justify-center gap-2.5 shadow-lg shadow-[#25D366]/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white py-3.5 sm:py-4 px-4 sm:px-6 rounded-2xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#25D366]/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
-            <MessageSquare className="w-5 h-5 fill-current" />
+            <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 fill-current shrink-0" />
             <span>Send Order on WhatsApp</span>
           </a>
         )}
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Link
             href={`/track-order/${order.orderNumber}`}
-            className="btn-dhaba bg-[#102a43] hover:bg-[#183b5b] text-white py-3.5 text-xs font-bold flex items-center justify-center gap-1.5"
+            className="btn-dhaba bg-[#102a43] hover:bg-[#183b5b] text-white py-3 sm:py-3.5 text-xs font-bold flex items-center justify-center gap-1.5"
           >
             <span>Track Order</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -98,7 +98,7 @@ export function OrderSuccessClient({
 
           <Link
             href={`/receipt/${order.orderNumber}`}
-            className="btn-dhaba border border-[#102a43]/20 bg-white hover:bg-[#fbf7ef] text-[#102a43] py-3.5 text-xs font-bold flex items-center justify-center gap-1.5"
+            className="btn-dhaba border border-[#102a43]/20 bg-white hover:bg-[#fbf7ef] text-[#102a43] py-3 sm:py-3.5 text-xs font-bold flex items-center justify-center gap-1.5"
           >
             <FileText className="w-3.5 h-3.5" />
             <span>View Receipt</span>

@@ -45,36 +45,36 @@ export default function AccountOverviewPage() {
     <div className="bg-[#fbf7ef] min-h-screen py-10">
       <div className="container-dhaba max-w-4xl space-y-6">
         {/* Profile Welcome Header */}
-        <div className="bg-white rounded-3xl p-6 md:p-8 border border-[#e9e1d4] shadow-sm flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-[#102a43] text-[#f2c35e] font-serif-dhaba font-bold text-2xl flex items-center justify-center shadow-brand">
+        <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 border border-[#e9e1d4] shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-[#102a43] text-[#f2c35e] font-serif-dhaba font-bold text-xl sm:text-2xl flex items-center justify-center shadow-brand shrink-0">
               {user.name.charAt(0).toUpperCase()}
             </div>
-            <div>
-              <span className="text-[11px] font-black tracking-widest text-[#d99a2b] uppercase">
+            <div className="min-w-0">
+              <span className="text-[10px] sm:text-[11px] font-black tracking-widest text-[#d99a2b] uppercase block">
                 DHABA CUSTOMER ACCOUNT
               </span>
-              <h1 className="font-serif-dhaba font-bold text-2xl text-[#102a43]">
+              <h1 className="font-serif-dhaba font-bold text-xl sm:text-2xl text-[#102a43] truncate">
                 Namaste, {user.name}!
               </h1>
-              <p className="text-xs text-[#6c7b87]">
+              <p className="text-xs text-[#6c7b87] truncate">
                 {user.phone} {user.email ? `• ${user.email}` : ""}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
             {user.role === "ADMIN" && (
               <Link
                 href="/admin"
-                className="btn-dhaba btn-dhaba-gold py-2.5 px-4 text-xs font-bold"
+                className="btn-dhaba btn-dhaba-gold py-2.5 px-3.5 sm:px-4 text-xs font-bold flex-1 sm:flex-initial text-center"
               >
-                Go to Admin Dashboard
+                Go to Admin
               </Link>
             )}
             <button
               onClick={() => logout()}
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 px-3.5 py-2.5 rounded-xl border border-red-200 transition-colors"
+              className="inline-flex items-center justify-center gap-1.5 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 px-3.5 py-2.5 rounded-xl border border-red-200 transition-colors flex-1 sm:flex-initial"
             >
               <LogOut className="w-3.5 h-3.5" />
               <span>Log Out</span>
@@ -140,7 +140,7 @@ export default function AccountOverviewPage() {
         </div>
 
         {/* Recent Orders Preview */}
-        <div className="bg-white rounded-3xl p-6 md:p-8 border border-[#e9e1d4] shadow-sm space-y-4">
+        <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 border border-[#e9e1d4] shadow-sm space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-[#e9e1d4]">
             <h2 className="font-serif-dhaba font-bold text-xl text-[#102a43]">
               Recent Orders

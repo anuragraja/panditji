@@ -3,10 +3,10 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="bg-[#091d2d] text-[#c4d0d7]">
-      <div className="container-dhaba py-[30px] flex justify-between items-center gap-5 max-md:grid">
+    <footer className="bg-[#091d2d] text-[#c4d0d7] pb-20 md:pb-0">
+      <div className="container-dhaba py-7 sm:py-[30px] flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
         <Link href="/" className="flex items-center gap-3 text-white">
-          <div className="w-[52px] h-[52px] rounded-full overflow-hidden border-2 border-[#d99a2b] shadow-brand flex-shrink-0 bg-white">
+          <div className="w-12 h-12 sm:w-[52px] sm:h-[52px] rounded-full overflow-hidden border-2 border-[#d99a2b] shadow-brand flex-shrink-0 bg-white">
             <img
               src="/images/logo.png"
               alt="Pandit Ji Ka Dhaba Logo"
@@ -23,11 +23,11 @@ export function Footer() {
           </div>
         </Link>
 
-        <p className="text-[12px] text-[#93a4ae]">
+        <p className="text-xs text-[#93a4ae]">
           Authentic Indian flavours. Fresh food. Warm hospitality.
         </p>
 
-        <div className="text-[12px] text-[#d5e0e6] flex items-center gap-3">
+        <div className="text-xs text-[#d5e0e6] flex flex-wrap items-center gap-x-3 gap-y-1.5">
           <Link href="/" className="hover:text-white transition-colors">
             Home
           </Link>
@@ -50,7 +50,7 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="text-center border-t border-white/[0.08] py-4 text-[10px] text-[#81929d]">
+      <div className="text-center border-t border-white/[0.08] py-4 text-[10px] text-[#81929d] px-4">
         © {new Date().getFullYear()} Pandit Ji Ka Dhaba • All rights reserved. • घर का स्वाद
       </div>
     </footer>

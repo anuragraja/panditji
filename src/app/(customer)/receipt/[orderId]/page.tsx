@@ -47,17 +47,17 @@ export default async function ReceiptPage({ params }: ReceiptPageProps) {
         </div>
 
         {/* Printable Receipt Card */}
-        <div className="bg-white rounded-3xl p-8 md:p-12 border border-[#e9e1d4] shadow-dhaba print:border-none print:shadow-none print:p-4 text-[#172b3a]">
+        <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-12 border border-[#e9e1d4] shadow-dhaba print:border-none print:shadow-none print:p-4 text-[#172b3a]">
           {/* Header */}
           <div className="text-center pb-6 border-b border-[#e9e1d4]">
-            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#d99a2b] mx-auto mb-2 bg-white">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border-2 border-[#d99a2b] mx-auto mb-2 bg-white">
               <img
                 src="/images/logo.png"
                 alt="Pandit Ji Ka Dhaba"
                 className="w-full h-full object-cover"
               />
             </div>
-            <h1 className="font-serif-dhaba font-bold text-3xl text-[#102a43]">
+            <h1 className="font-serif-dhaba font-bold text-2xl sm:text-3xl text-[#102a43]">
               {settings.restaurantName}
             </h1>
             <p className="text-xs font-bold text-[#d99a2b] tracking-widest uppercase">
@@ -70,31 +70,31 @@ export default async function ReceiptPage({ params }: ReceiptPageProps) {
           </div>
 
           {/* Invoice Meta */}
-          <div className="grid grid-cols-2 gap-4 py-6 border-b border-[#e9e1d4] text-xs">
+          <div className="grid grid-cols-2 gap-4 py-4 sm:py-6 border-b border-[#e9e1d4] text-xs">
             <div>
               <span className="text-[#6c7b87] block">Order Receipt No:</span>
-              <b className="text-sm font-black text-[#102a43] block">
+              <b className="text-xs sm:text-sm font-black text-[#102a43] block">
                 {order.orderNumber}
               </b>
-              <span className="text-[#6c7b87] block mt-2">Date & Time:</span>
-              <span className="font-semibold">{formatDateTime(order.createdAt)}</span>
+              <span className="text-[#6c7b87] block mt-1.5">Date & Time:</span>
+              <span className="font-semibold text-[11px] sm:text-xs">{formatDateTime(order.createdAt)}</span>
             </div>
 
             <div className="text-right">
               <span className="text-[#6c7b87] block">Billed To:</span>
-              <b className="text-sm font-bold text-[#102a43] block">
+              <b className="text-xs sm:text-sm font-bold text-[#102a43] block">
                 {order.customerSnapshot.name}
               </b>
-              <span className="text-[#6c7b87] block">{order.customerSnapshot.phone}</span>
-              <span className="inline-block mt-2 font-black px-2.5 py-0.5 rounded-full bg-[#f5ead5] text-[#9a6714] text-[10px]">
+              <span className="text-[#6c7b87] block text-[11px] sm:text-xs">{order.customerSnapshot.phone}</span>
+              <span className="inline-block mt-1.5 font-black px-2.5 py-0.5 rounded-full bg-[#f5ead5] text-[#9a6714] text-[10px]">
                 {order.orderType}
               </span>
             </div>
           </div>
 
           {/* Items Table */}
-          <div className="py-6 border-b border-[#e9e1d4]">
-            <table className="w-full text-xs">
+          <div className="py-4 sm:py-6 border-b border-[#e9e1d4] overflow-x-auto">
+            <table className="w-full min-w-[320px] text-xs">
               <thead>
                 <tr className="border-b border-[#e9e1d4] text-[#6c7b87] font-bold text-left">
                   <th className="pb-2">Item Description</th>

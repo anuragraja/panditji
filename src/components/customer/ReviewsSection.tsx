@@ -43,20 +43,20 @@ export function ReviewsSection({ reviews }: ReviewsSectionProps) {
         ];
 
   return (
-    <section className="section py-[94px] max-sm:py-[68px]" id="reviews">
+    <section className="section py-14 sm:py-[94px]" id="reviews">
       <div className="container-dhaba">
-        <div className="text-center mb-[35px]">
+        <div className="text-center mb-6 sm:mb-[35px]">
           <div className="eyebrow">GUEST LOVE</div>
-          <h2 className="font-serif-dhaba font-extrabold text-[43px] max-sm:text-[35px] leading-[1.12] text-[#102a43] mt-[9px]">
+          <h2 className="font-serif-dhaba font-extrabold text-2xl sm:text-4xl lg:text-[43px] leading-tight text-[#102a43] mt-2">
             What Our <span className="text-[#246b9b]">Guests Say</span>
           </h2>
         </div>
 
-        <div className="grid grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-[18px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-[18px]">
           {displayReviews.map((rev) => (
             <article
               key={rev._id}
-              className="bg-white border border-[#e9e1d4] rounded-[17px] p-[25px] shadow-sm hover:shadow-md transition-shadow"
+              className="bg-white border border-[#e9e1d4] rounded-[17px] p-4 sm:p-[25px] shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="text-[#d99a2b] tracking-[2px] text-[13px] mb-2 font-mono">
                 {"★".repeat(rev.rating)}

@@ -94,44 +94,44 @@ export function ContactBookingSection({ settings }: ContactBookingSectionProps) 
   };
 
   return (
-    <section className="bg-[#102a43] text-white py-[82px]" id="contact">
-      <div className="container-dhaba grid grid-cols-[1.2fr_0.8fr] max-md:grid-cols-1 gap-[65px] max-md:gap-[35px] items-start">
+    <section className="bg-[#102a43] text-white py-14 sm:py-[82px]" id="contact">
+      <div className="container-dhaba grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-8 lg:gap-[65px] items-start">
         {/* Contact details */}
         <div>
           <div className="eyebrow text-[#f5d28d]">COME & VISIT</div>
-          <h2 className="font-serif-dhaba font-extrabold text-[43px] max-sm:text-[35px] leading-[1.12] text-white mt-[9px]">
+          <h2 className="font-serif-dhaba font-extrabold text-2xl sm:text-4xl lg:text-[43px] leading-tight text-white mt-2">
             Let&apos;s Share A Meal.
           </h2>
-          <p className="text-[#c4d1d9] max-w-[540px] text-[14px] my-[16px] mb-[28px] leading-relaxed">
+          <p className="text-[#c4d1d9] max-w-[540px] text-xs sm:text-[14px] my-3 sm:my-[16px] mb-6 sm:mb-[28px] leading-relaxed">
             Drop in for a hearty meal, a refreshing drink and the kind of hospitality that makes you want to come back.
           </p>
 
-          <div className="grid gap-[17px]">
-            <div className="flex gap-[13px] items-start">
-              <span className="text-[20px] select-none">📍</span>
+          <div className="grid gap-3.5 sm:gap-[17px]">
+            <div className="flex gap-3 sm:gap-[13px] items-start">
+              <span className="text-xl sm:text-[20px] select-none shrink-0">📍</span>
               <div>
-                <b className="block text-[13px] font-bold text-white">Address</b>
-                <span className="block text-[#b8c7d0] text-[12px] mt-[3px]">
+                <b className="block text-xs sm:text-[13px] font-bold text-white">Address</b>
+                <span className="block text-[#b8c7d0] text-[11px] sm:text-[12px] mt-0.5 sm:mt-[3px]">
                   {restaurantAddress}
                 </span>
               </div>
             </div>
 
-            <div className="flex gap-[13px] items-start">
-              <span className="text-[20px] select-none">📞</span>
+            <div className="flex gap-3 sm:gap-[13px] items-start">
+              <span className="text-xl sm:text-[20px] select-none shrink-0">📞</span>
               <div>
-                <b className="block text-[13px] font-bold text-white">Call Us</b>
-                <span className="block text-[#b8c7d0] text-[12px] mt-[3px]">
+                <b className="block text-xs sm:text-[13px] font-bold text-white">Call Us</b>
+                <span className="block text-[#b8c7d0] text-[11px] sm:text-[12px] mt-0.5 sm:mt-[3px]">
                   {restaurantPhone}
                 </span>
               </div>
             </div>
 
-            <div className="flex gap-[13px] items-start">
-              <span className="text-[20px] select-none">🕐</span>
+            <div className="flex gap-3 sm:gap-[13px] items-start">
+              <span className="text-xl sm:text-[20px] select-none shrink-0">🕐</span>
               <div>
-                <b className="block text-[13px] font-bold text-white">Opening Hours</b>
-                <span className="block text-[#b8c7d0] text-[12px] mt-[3px]">
+                <b className="block text-xs sm:text-[13px] font-bold text-white">Opening Hours</b>
+                <span className="block text-[#b8c7d0] text-[11px] sm:text-[12px] mt-0.5 sm:mt-[3px]">
                   {restaurantHours}
                 </span>
               </div>
@@ -140,8 +140,8 @@ export function ContactBookingSection({ settings }: ContactBookingSectionProps) 
         </div>
 
         {/* Booking form */}
-        <div className="bg-white text-[#172b3a] rounded-[19px] p-[27px] shadow-2xl border border-white/20">
-          <h3 className="font-serif-dhaba font-bold text-[25px] text-[#102a43] mb-[15px]">
+        <div className="bg-white text-[#172b3a] rounded-2xl sm:rounded-[19px] p-5 sm:p-[27px] shadow-2xl border border-white/20">
+          <h3 className="font-serif-dhaba font-bold text-xl sm:text-[25px] text-[#102a43] mb-3 sm:mb-[15px]">
             Book a Table
           </h3>
 

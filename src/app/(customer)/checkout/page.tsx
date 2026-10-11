@@ -240,16 +240,16 @@ export default function CheckoutPage() {
           {/* Main Checkout Fields */}
           <div className="lg:col-span-2 space-y-6">
             {!user && (
-              <div className="bg-[#102a43] text-white rounded-3xl p-6 border-2 border-[#d99a2b] shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-3.5">
-                  <div className="w-12 h-12 rounded-2xl bg-[#d99a2b] text-[#102a43] flex items-center justify-center font-black text-2xl shrink-0 shadow-md">
+              <div className="bg-[#102a43] text-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border-2 border-[#d99a2b] shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3 sm:gap-3.5">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-[#d99a2b] text-[#102a43] flex items-center justify-center font-black text-xl sm:text-2xl shrink-0 shadow-md">
                     🔒
                   </div>
                   <div>
-                    <h3 className="font-serif-dhaba font-bold text-lg text-white">
+                    <h3 className="font-serif-dhaba font-bold text-base sm:text-lg text-white">
                       Please Log In to Place Your Order
                     </h3>
-                    <p className="text-xs text-[#cbd8e0] mt-0.5">
+                    <p className="text-[11px] sm:text-xs text-[#cbd8e0] mt-0.5">
                       You must be signed in with your customer account to place orders, track kitchen updates, and view receipts.
                     </p>
                   </div>
@@ -271,21 +271,21 @@ export default function CheckoutPage() {
               </div>
             )}
             {/* 1. Order Type (Delivery vs Pickup) */}
-            <div className="bg-white rounded-3xl p-6 border border-[#e9e1d4] shadow-sm">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-[#e9e1d4] shadow-sm">
               <h2 className="font-serif-dhaba font-bold text-lg text-[#102a43] mb-4 flex items-center gap-2">
                 <span>1. Order Type</span>
               </h2>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => setOrderType("DELIVERY")}
-                  className={`p-4 rounded-2xl border text-left flex items-center gap-3 transition-all ${
+                  className={`p-3.5 sm:p-4 rounded-2xl border text-left flex items-center gap-3 transition-all ${
                     orderType === "DELIVERY"
                       ? "border-[#d99a2b] bg-[#f5ead5]/40 text-[#102a43] font-bold shadow-sm"
                       : "border-[#e9e1d4] bg-white text-[#526575]"
                   }`}
                 >
-                  <Bike className="w-6 h-6 text-[#d99a2b]" />
+                  <Bike className="w-5 h-5 sm:w-6 sm:h-6 text-[#d99a2b] shrink-0" />
                   <div>
                     <span className="block text-sm font-bold">Home Delivery</span>
                     <span className="block text-[11px] text-[#6c7b87]">
@@ -297,13 +297,13 @@ export default function CheckoutPage() {
                 <button
                   type="button"
                   onClick={() => setOrderType("PICKUP")}
-                  className={`p-4 rounded-2xl border text-left flex items-center gap-3 transition-all ${
+                  className={`p-3.5 sm:p-4 rounded-2xl border text-left flex items-center gap-3 transition-all ${
                     orderType === "PICKUP"
                       ? "border-[#d99a2b] bg-[#f5ead5]/40 text-[#102a43] font-bold shadow-sm"
                       : "border-[#e9e1d4] bg-white text-[#526575]"
                   }`}
                 >
-                  <ShoppingBag className="w-6 h-6 text-[#246b9b]" />
+                  <ShoppingBag className="w-5 h-5 sm:w-6 sm:h-6 text-[#246b9b] shrink-0" />
                   <div>
                     <span className="block text-sm font-bold">Self Pickup</span>
                     <span className="block text-[11px] text-[#6c7b87]">
@@ -315,7 +315,7 @@ export default function CheckoutPage() {
             </div>
 
             {/* 2. Customer Contact Details */}
-            <div className="bg-white rounded-3xl p-6 border border-[#e9e1d4] shadow-sm">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-[#e9e1d4] shadow-sm">
               <h2 className="font-serif-dhaba font-bold text-lg text-[#102a43] mb-4">
                 2. Contact Information
               </h2>
@@ -365,7 +365,7 @@ export default function CheckoutPage() {
 
             {/* 3. Delivery Address (if Delivery selected) */}
             {orderType === "DELIVERY" && (
-              <div className="bg-white rounded-3xl p-6 border border-[#e9e1d4] shadow-sm">
+              <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-[#e9e1d4] shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="font-serif-dhaba font-bold text-lg text-[#102a43] flex items-center gap-2">
                     <MapPin className="w-5 h-5 text-[#d99a2b]" />
@@ -480,7 +480,7 @@ export default function CheckoutPage() {
             )}
 
             {/* 4. Payment Method */}
-            <div className="bg-white rounded-3xl p-6 border border-[#e9e1d4] shadow-sm">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-[#e9e1d4] shadow-sm">
               <h2 className="font-serif-dhaba font-bold text-lg text-[#102a43] mb-4">
                 {orderType === "DELIVERY" ? "4. Payment Method" : "3. Payment Method"}
               </h2>
@@ -543,7 +543,7 @@ export default function CheckoutPage() {
             </div>
 
             {/* 5. Order Notes */}
-            <div className="bg-white rounded-3xl p-6 border border-[#e9e1d4] shadow-sm">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-[#e9e1d4] shadow-sm">
               <label className="block text-xs font-bold text-[#102a43] mb-1">
                 Order Notes / Delivery Instructions
               </label>
@@ -560,7 +560,7 @@ export default function CheckoutPage() {
           {/* Right Summary Column */}
           <div className="space-y-4">
             {/* Coupon Box */}
-            <div className="bg-white rounded-3xl p-5 border border-[#e9e1d4] shadow-sm">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-[#e9e1d4] shadow-sm">
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -572,7 +572,7 @@ export default function CheckoutPage() {
                 <button
                   type="button"
                   onClick={handleApplyCoupon}
-                  className="btn-dhaba btn-dhaba-gold py-2 px-3 text-xs font-bold whitespace-nowrap"
+                  className="btn-dhaba btn-dhaba-gold py-2 px-3 text-xs font-bold whitespace-nowrap shrink-0"
                 >
                   Apply
                 </button>
@@ -589,7 +589,7 @@ export default function CheckoutPage() {
             </div>
 
             {/* Order Items Preview */}
-            <div className="bg-white rounded-3xl p-6 border border-[#e9e1d4] shadow-sm space-y-4">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-[#e9e1d4] shadow-sm space-y-4">
               <h3 className="font-serif-dhaba font-bold text-lg text-[#102a43] pb-2 border-b border-[#e9e1d4]">
                 Order Items ({items.length})
               </h3>
