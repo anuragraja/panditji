@@ -14,7 +14,8 @@ import {
   getApprovedReviews,
 } from "@/services/restaurant";
 
-export const revalidate = 60; // ISR cache revalidation every minute
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function HomePage() {
   const [dishes, categories, settings, reviews] = await Promise.all([

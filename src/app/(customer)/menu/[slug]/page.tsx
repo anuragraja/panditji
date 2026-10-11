@@ -7,8 +7,6 @@ import { MenuItem } from "@/models/MenuItem";
 import { formatCurrency } from "@/lib/utils";
 import { ArrowLeft, Clock } from "lucide-react";
 import { AddToCartButtonWithCustomization } from "./AddToCartClient";
-import { fallbackDishes } from "@/services/restaurant";
-
 interface DishPageProps {
   params: Promise<{ slug: string }>;
 }
@@ -17,10 +15,7 @@ export default async function DishDetailPage({ params }: DishPageProps) {
   const { slug } = await params;
   await connectToDatabase();
 
-  let dish = await MenuItem.findOne({ slug }).lean();
-  if (!dish) {
-    dish = fallbackDishes.find((d) => d.slug === slug) as never;
-  }
+  const dish = await MenuItem.findOne({ slug }).lean();
 
   if (!dish) {
     notFound();

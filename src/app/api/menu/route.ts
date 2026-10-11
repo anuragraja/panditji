@@ -4,6 +4,7 @@ import { MenuItem } from "@/models/MenuItem";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { MenuItemSchema } from "@/lib/validation";
 import { logAudit } from "@/lib/audit";
+import { revalidatePath } from "next/cache";
 
 export async function GET(req: NextRequest) {
   try {
@@ -83,6 +84,9 @@ export async function POST(req: NextRequest) {
       entityId: newItem._id.toString(),
       metadata: { name: newItem.name, price: newItem.basePrice },
     });
+
+    revalidatePath("/");
+    revalidatePath("/menu");
 
     return NextResponse.json({
       success: true,

@@ -3,6 +3,7 @@ import { connectToDatabase } from "@/lib/db/mongodb";
 import { MenuItem } from "@/models/MenuItem";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { logAudit } from "@/lib/audit";
+import { revalidatePath } from "next/cache";
 
 export async function GET(
   req: NextRequest,
@@ -68,6 +69,9 @@ export async function PUT(
       metadata: { name: updated.name },
     });
 
+    revalidatePath("/");
+    revalidatePath("/menu");
+
     return NextResponse.json({
       success: true,
       message: "Menu item updated successfully!",
@@ -110,6 +114,9 @@ export async function DELETE(
       entityId: id,
       metadata: { name: deleted.name },
     });
+
+    revalidatePath("/");
+    revalidatePath("/menu");
 
     return NextResponse.json({
       success: true,

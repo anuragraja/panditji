@@ -8,6 +8,9 @@ export const metadata = {
     "Explore our authentic Indian dhaba menu: Paneer Butter Masala, Dal Tadka, Amritsari Chole, Tandoori Breads, Jeera Rice, and Sweet Lassi.",
 };
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function MenuPage() {
   const [dishes, categories] = await Promise.all([
     getDishes(),

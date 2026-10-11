@@ -75,62 +75,75 @@ export function MenuSection({ initialDishes, categories }: MenuSectionProps) {
           </p>
         </div>
 
-        {/* Search and Veg Filter Bar */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6">
-          {/* Category Pills - Swipeable on mobile, wrapping on desktop */}
-          <div className="flex gap-2 overflow-x-auto no-scrollbar py-1 -mx-2 px-2 md:mx-0 md:px-0 max-w-full flex-nowrap md:flex-wrap" id="categories">
-            {categoryTabs.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setSelectedCat(cat)}
-                className={`border text-[11px] sm:text-[12px] font-extrabold px-3.5 sm:px-[15px] py-1.5 sm:py-[9px] rounded-full cursor-pointer transition-all shrink-0 whitespace-nowrap ${
-                  selectedCat === cat
-                    ? "bg-[#102a43] text-white border-[#102a43] shadow-sm"
-                    : "border-[#ddd3c4] bg-[#fffaf2] text-[#586b78] hover:bg-[#102a43] hover:text-white hover:border-[#102a43]"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          {/* Quick Search and Veg toggle */}
-          <div className="flex items-center gap-2 sm:gap-3 w-full md:w-auto">
-            <div className="relative flex-1 md:w-56">
-              <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#6c7b87] absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                placeholder="Search dish..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-8 sm:pl-9 pr-3 py-2 text-xs rounded-full border border-[#ddd3c4] bg-[#fffaf2] text-[#172b3a] outline-none focus:border-[#d99a2b]"
-              />
+        {/* When no dishes are posted by admin yet */}
+        {initialDishes.length === 0 ? (
+          <div className="bg-white rounded-2xl p-12 text-center border border-[#e9e1d4] text-[#6c7b87] max-w-lg mx-auto shadow-sm my-6">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#fbf7ef] flex items-center justify-center text-[#d99a2b]">
+              <Sparkles className="w-8 h-8" />
             </div>
-            <button
-              type="button"
-              onClick={() => setVegOnly(!vegOnly)}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-full border text-xs font-bold transition-all shrink-0 ${
-                vegOnly
-                  ? "bg-[#2d7a52] text-white border-[#2d7a52]"
-                  : "bg-[#fffaf2] text-[#3d5362] border-[#ddd3c4] hover:border-[#2d7a52]"
-              }`}
-            >
-              <span className="w-2.5 h-2.5 rounded-full border border-current flex items-center justify-center p-0.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-current" />
-              </span>
-              <span>Pure Veg</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Menu Grid */}
-        {filteredDishes.length === 0 ? (
-          <div className="bg-white rounded-2xl p-12 text-center border border-[#e9e1d4] text-[#6c7b87]">
-            <p className="text-base font-semibold">No dishes found in this category.</p>
-            <p className="text-xs mt-1">Try searching for something else or reset filters.</p>
+            <h3 className="font-serif-dhaba font-bold text-xl text-[#102a43] mb-2">Our Menu is Being Updated</h3>
+            <p className="text-sm text-[#6c7b87] leading-relaxed">
+              Delicious new dishes will appear here as soon as they are added from the admin dashboard.
+            </p>
           </div>
         ) : (
+          <>
+            {/* Search and Veg Filter Bar */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6">
+              {/* Category Pills - Swipeable on mobile, wrapping on desktop */}
+              <div className="flex gap-2 overflow-x-auto no-scrollbar py-1 -mx-2 px-2 md:mx-0 md:px-0 max-w-full flex-nowrap md:flex-wrap" id="categories">
+                {categoryTabs.map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setSelectedCat(cat)}
+                    className={`border text-[11px] sm:text-[12px] font-extrabold px-3.5 sm:px-[15px] py-1.5 sm:py-[9px] rounded-full cursor-pointer transition-all shrink-0 whitespace-nowrap ${
+                      selectedCat === cat
+                        ? "bg-[#102a43] text-white border-[#102a43] shadow-sm"
+                        : "border-[#ddd3c4] bg-[#fffaf2] text-[#586b78] hover:bg-[#102a43] hover:text-white hover:border-[#102a43]"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+
+              {/* Quick Search and Veg toggle */}
+              <div className="flex items-center gap-2 sm:gap-3 w-full md:w-auto">
+                <div className="relative flex-1 md:w-56">
+                  <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#6c7b87] absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    placeholder="Search dish..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-8 sm:pl-9 pr-3 py-2 text-xs rounded-full border border-[#ddd3c4] bg-[#fffaf2] text-[#172b3a] outline-none focus:border-[#d99a2b]"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setVegOnly(!vegOnly)}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-full border text-xs font-bold transition-all shrink-0 ${
+                    vegOnly
+                      ? "bg-[#2d7a52] text-white border-[#2d7a52]"
+                      : "bg-[#fffaf2] text-[#3d5362] border-[#ddd3c4] hover:border-[#2d7a52]"
+                  }`}
+                >
+                  <span className="w-2.5 h-2.5 rounded-full border border-current flex items-center justify-center p-0.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                  </span>
+                  <span>Pure Veg</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Menu Grid */}
+            {filteredDishes.length === 0 ? (
+              <div className="bg-white rounded-2xl p-12 text-center border border-[#e9e1d4] text-[#6c7b87]">
+                <p className="text-base font-semibold">No dishes found matching your selection.</p>
+                <p className="text-xs mt-1">Try selecting another category or clearing the search filter.</p>
+              </div>
+            ) : (
           <div className="grid grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-[18px]" id="menuGrid">
             {filteredDishes.map((dish) => (
               <article
@@ -193,6 +206,8 @@ export function MenuSection({ initialDishes, categories }: MenuSectionProps) {
               </article>
             ))}
           </div>
+        )}
+          </>
         )}
       </div>
 
