@@ -5,20 +5,34 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
-import { Lock, Phone, ArrowRight } from "lucide-react";
+import { Lock, Phone, ArrowRight, ShieldCheck } from "lucide-react";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectParam = searchParams.get("redirect");
 
-  const { login } = useAuth();
+  const { user, isLoading, login } = useAuth();
   const { showToast } = useToast();
 
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  const isAdminRedirect = Boolean(redirectParam && redirectParam.startsWith("/admin"));
+
+  // If already authenticated as admin, take directly to admin panel
+  React.useEffect(() => {
+    if (!isLoading && user) {
+      if (user.role === "ADMIN") {
+        const dest = redirectParam && redirectParam.startsWith("/admin") ? redirectParam : "/admin";
+        router.replace(dest);
+      } else if (!isAdminRedirect) {
+        router.replace(redirectParam || "/account");
+      }
+    }
+  }, [user, isLoading, redirectParam, isAdminRedirect, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,14 +52,15 @@ function LoginForm() {
       }
 
       login(data.user);
-      showToast("Welcome back! Logged in successfully.");
 
-      if (redirectParam) {
-        router.push(redirectParam);
-      } else if (data.user.role === "ADMIN") {
-        router.push("/admin");
+      if (data.user.role === "ADMIN") {
+        showToast("Admin access granted. Welcome to Dhaba Dashboard!");
+        const dest = redirectParam && redirectParam.startsWith("/admin") ? redirectParam : "/admin";
+        router.push(dest);
       } else {
-        router.push("/account");
+        showToast("Welcome back! Logged in successfully.");
+        const dest = redirectParam && !redirectParam.startsWith("/admin") ? redirectParam : "/account";
+        router.push(dest);
       }
     } catch (err: unknown) {
       const error = err as Error;
@@ -67,13 +82,29 @@ function LoginForm() {
                 className="w-full h-full object-cover"
               />
             </div>
+
+            {isAdminRedirect && (
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f5ead5] text-[#9a6714] text-[10px] font-black uppercase tracking-wider mb-2">
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Admin & Staff Access</span>
+              </div>
+            )}
+
             <h1 className="font-serif-dhaba font-bold text-2xl text-[#102a43]">
-              Welcome Back
+              {isAdminRedirect ? "Dhaba Portal Login" : "Welcome Back"}
             </h1>
             <p className="text-xs text-[#6c7b87] mt-1">
-              Log in to Pandit Ji Ka Dhaba to manage your orders & addresses.
+              {isAdminRedirect
+                ? "Enter your credentials to access the Restaurant Admin Dashboard."
+                : "Log in to Pandit Ji Ka Dhaba to manage your orders & addresses."}
             </p>
           </div>
+
+          {user && user.role !== "ADMIN" && isAdminRedirect && (
+            <div className="mb-4 p-3 bg-amber-50 text-amber-900 rounded-xl text-xs border border-amber-200">
+              Currently signed in as <b>{user.name}</b> (Customer). Enter your administrator credentials below to switch to the Admin Portal.
+            </div>
+          )}
 
           {errorMsg && (
             <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-xl text-xs font-semibold border border-red-200">

@@ -17,20 +17,14 @@ export default function AdminLayout({
   const { user, isLoading } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const isLoginPage = pathname === "/admin/login";
-
   useEffect(() => {
-    if (!isLoading && !isLoginPage) {
+    if (!isLoading) {
       if (!user || user.role !== "ADMIN") {
-        router.push("/admin/login");
+        const target = pathname && pathname !== "/admin/login" ? pathname : "/admin";
+        router.replace(`/login?redirect=${encodeURIComponent(target)}`);
       }
     }
-  }, [user, isLoading, isLoginPage, router]);
-
-  // If on admin login page, just render children without sidebar
-  if (isLoginPage) {
-    return <>{children}</>;
-  }
+  }, [user, isLoading, pathname, router]);
 
   if (isLoading || !user || user.role !== "ADMIN") {
     return (
