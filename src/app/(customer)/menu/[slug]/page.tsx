@@ -42,6 +42,7 @@ export default async function DishDetailPage({ params }: DishPageProps) {
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 500px"
               priority
+              unoptimized={dish.image?.startsWith("data:")}
             />
             {dish.tag && (
               <span className="absolute top-4 left-4 bg-white text-[#102a43] text-xs font-black px-3 py-1.5 rounded-lg shadow-md">

@@ -20,6 +20,93 @@ import {
 
 import { getCachedData, setCachedData, invalidateCache } from "@/lib/client-cache";
 
+const QUICK_PRESET_IMAGES = [
+  {
+    label: "Paneer / Curry",
+    icon: "🥘",
+    url: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    label: "Dal Tadka",
+    icon: "🍲",
+    url: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    label: "Roti / Naan",
+    icon: "🫓",
+    url: "https://images.unsplash.com/photo-1628294895950-9805252327bc?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    label: "Rice / Biryani",
+    icon: "🍚",
+    url: "https://images.unsplash.com/photo-1563379091339-03246963d96c?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    label: "Lassi / Drinks",
+    icon: "🥤",
+    url: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    label: "Thali / Combo",
+    icon: "🍱",
+    url: "https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd7?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    label: "Desserts",
+    icon: "🍨",
+    url: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    label: "Snacks",
+    icon: "🥟",
+    url: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=85",
+  },
+];
+
+function compressImage(file: File, maxWidth = 800, maxHeight = 800, quality = 0.82): Promise<string> {
+  return new Promise((resolve, reject) => {
+    if (!file.type.startsWith("image/")) {
+      reject(new Error("Please upload a valid image file."));
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new (window as unknown as { Image: new () => HTMLImageElement }).Image();
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth || height > maxHeight) {
+          if (width > height) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          resolve(e.target?.result as string);
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.onerror = () => resolve(e.target?.result as string);
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 export default function AdminMenuPage() {
   const { showToast } = useToast();
   const [items, setItems] = useState<IMenuItem[]>(() => {
@@ -234,22 +321,32 @@ export default function AdminMenuPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setUploading(true);
-    const fd = new FormData();
-    fd.append("file", file);
+    // Reset value so selecting the same file triggers onChange
+    e.target.value = "";
 
+    setUploading(true);
     try {
+      // 1. Client-side compress and resize image (under 100KB, max 800x800)
+      const compressedDataUri = await compressImage(file, 800, 800, 0.82);
+
+      // Set image preview immediately
+      setImage(compressedDataUri);
+
+      // 2. Upload to backend
       const res = await fetch("/api/upload", {
         method: "POST",
-        body: fd,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageBase64: compressedDataUri }),
       });
+
       const data = await res.json();
       if (data.success && data.url) {
         setImage(data.url);
-        showToast("Image uploaded successfully! ✓");
       }
-    } catch {
-      showToast("Image upload failed");
+      showToast("Image ready for dish! ✓");
+    } catch (err) {
+      console.error("Image upload/compression error:", err);
+      showToast("Could not process image file");
     } finally {
       setUploading(false);
     }
@@ -257,20 +354,45 @@ export default function AdminMenuPage() {
 
   const handleSaveItem = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!name.trim()) {
+      showToast("Dish name is required");
+      return;
+    }
+
+    if (!basePrice || Number(basePrice) <= 0) {
+      showToast("Base price must be greater than 0");
+      return;
+    }
+
+    if (!image.trim()) {
+      showToast("Please provide or upload an image for the dish");
+      return;
+    }
+
     setSaving(true);
 
+    const safeSlug =
+      (slug.trim() ||
+        name
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "")) ||
+      `dish-${Date.now()}`;
+
     const payload = {
-      name,
-      hindiName,
-      slug: slug || name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-      description,
-      category,
+      name: name.trim(),
+      hindiName: hindiName.trim(),
+      slug: safeSlug,
+      description: description.trim() || name.trim(),
+      category: category || "Main Course",
       foodType,
       basePrice: Number(basePrice),
-      discountPrice: discountPrice ? Number(discountPrice) : undefined,
-      image,
-      tag,
-      preparationTime,
+      discountPrice: discountPrice && Number(discountPrice) > 0 ? Number(discountPrice) : undefined,
+      image: image.trim(),
+      tag: tag.trim(),
+      preparationTime: preparationTime.trim() || "15-20 mins",
       available,
       featured,
       popular,
@@ -688,30 +810,87 @@ export default function AdminMenuPage() {
                 </div>
               </div>
 
-              {/* Image Input with Upload button */}
-              <div>
-                <label className="block font-bold text-[#102a43] mb-1">
-                  Dish Image URL or Cloudinary Upload
-                </label>
+              {/* Image Input with Upload button, Preview & Quick Presets */}
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label className="font-bold text-[#102a43]">
+                    Dish Image *
+                  </label>
+                  {image && (
+                    <span className="text-[11px] text-[#2d7a52] font-semibold flex items-center gap-1">
+                      <CheckCircle className="w-3.5 h-3.5" /> Image Selected
+                    </span>
+                  )}
+                </div>
+
                 <div className="flex gap-2">
                   <input
                     required
-                    type="url"
-                    placeholder="https://..."
+                    type="text"
+                    placeholder="Paste image URL (https://...) or click Upload"
                     value={image}
                     onChange={(e) => setImage(e.target.value)}
-                    className="w-full p-2.5 border border-[#ddd8cf] rounded-xl outline-none"
+                    className="w-full p-2.5 border border-[#ddd8cf] rounded-xl outline-none text-xs"
                   />
-                  <label className="btn-dhaba bg-[#102a43] text-white p-2.5 px-3 rounded-xl cursor-pointer flex items-center gap-1.5 shrink-0">
+                  <label className="btn-dhaba bg-[#102a43] text-white p-2.5 px-3 rounded-xl cursor-pointer flex items-center gap-1.5 shrink-0 hover:bg-[#1a3d60] transition-colors">
                     <Upload className="w-3.5 h-3.5" />
-                    <span>{uploading ? "Uploading..." : "Upload"}</span>
+                    <span>{uploading ? "Compressing..." : "Upload File"}</span>
                     <input
                       type="file"
                       accept="image/*"
                       onChange={handleImageUpload}
                       className="hidden"
+                      disabled={uploading}
                     />
                   </label>
+                </div>
+
+                {/* Image Thumbnail Preview */}
+                {image && (
+                  <div className="flex items-center gap-3 p-2 bg-[#fbf7ef] border border-[#e9e1d4] rounded-xl">
+                    <div
+                      className="w-14 h-14 rounded-lg bg-cover bg-center border border-[#ddd8cf] shrink-0 bg-white"
+                      style={{ backgroundImage: `url('${image}')` }}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <span className="text-xs font-bold text-[#102a43] block truncate">
+                        {image.startsWith("data:") ? "Uploaded Image (Optimized)" : image}
+                      </span>
+                      <span className="text-[11px] text-[#6c7b87]">
+                        Preview ready for menu card
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setImage("")}
+                      className="p-1 text-red-500 hover:bg-red-50 rounded-lg text-xs font-bold shrink-0"
+                      title="Clear Image"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
+                {/* 1-Click Quick Food Preset Images */}
+                <div>
+                  <span className="text-[11px] font-bold text-[#6c7b87] block mb-1">
+                    Or select a 1-Click Dhaba photo preset:
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {QUICK_PRESET_IMAGES.map((preset) => (
+                      <button
+                        key={preset.label}
+                        type="button"
+                        onClick={() => {
+                          setImage(preset.url);
+                          showToast(`Selected ${preset.label} image ✓`);
+                        }}
+                        className="px-2.5 py-1 text-[11px] font-semibold rounded-lg border border-[#ddd8cf] bg-white hover:bg-[#102a43] hover:text-white hover:border-[#102a43] transition-all shadow-2xs"
+                      >
+                        {preset.icon} {preset.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 

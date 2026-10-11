@@ -19,39 +19,60 @@ export async function POST(req: NextRequest) {
   if (!auth.authorized) return auth.response!;
 
   try {
-    const formData = await req.formData();
-    const file = formData.get("file") as File | null;
-    const urlInput = formData.get("url") as string | null;
+    const contentType = req.headers.get("content-type") || "";
+    let base64Data: string | null = null;
+    let urlInput: string | null = null;
+
+    if (contentType.includes("application/json")) {
+      const json = await req.json();
+      base64Data = json.imageBase64 || null;
+      urlInput = json.url || null;
+    } else {
+      const formData = await req.formData();
+      const file = formData.get("file") as File | null;
+      urlInput = formData.get("url") as string | null;
+
+      if (file) {
+        const buffer = Buffer.from(await file.arrayBuffer());
+        base64Data = `data:${file.type || "image/jpeg"};base64,${buffer.toString("base64")}`;
+      }
+    }
 
     if (urlInput) {
       return NextResponse.json({ success: true, url: urlInput });
     }
 
-    if (!file) {
+    if (!base64Data) {
       return NextResponse.json(
-        { success: false, message: "No file uploaded" },
+        { success: false, message: "No image file or URL received" },
         { status: 400 }
       );
     }
-
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const base64Data = `data:${file.type};base64,${buffer.toString("base64")}`;
 
     if (
       process.env.CLOUDINARY_CLOUD_NAME &&
       process.env.CLOUDINARY_API_KEY &&
       process.env.CLOUDINARY_API_SECRET
     ) {
-      const uploadRes = await cloudinary.uploader.upload(base64Data, {
-        folder: "pandit_ji_ka_dhaba",
-      });
-      return NextResponse.json({ success: true, url: uploadRes.secure_url });
+      try {
+        const uploadRes = await cloudinary.uploader.upload(base64Data, {
+          folder: "pandit_ji_ka_dhaba",
+        });
+        return NextResponse.json({ success: true, url: uploadRes.secure_url });
+      } catch (cloudErr) {
+        console.warn("Cloudinary upload failed, falling back to data URI:", cloudErr);
+        return NextResponse.json({
+          success: true,
+          url: base64Data,
+          message: "Uploaded locally (Cloudinary unavailable)",
+        });
+      }
     } else {
-      // In local mode without Cloudinary credentials configured yet, return data URI
+      // In local/fallback mode without Cloudinary credentials configured
       return NextResponse.json({
         success: true,
         url: base64Data,
-        message: "Uploaded locally (configure Cloudinary in .env for CDN hosting)",
+        message: "Uploaded locally",
       });
     }
   } catch (error) {

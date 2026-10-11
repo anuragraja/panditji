@@ -88,7 +88,7 @@ export const MenuItemSchema = z.object({
   name: z.string().min(2, "Item name is required"),
   hindiName: z.string().optional().default(""),
   slug: z.string().min(2, "Slug is required"),
-  description: z.string().min(5, "Description is required"),
+  description: z.string().min(1, "Description is required"),
   category: z.string().min(1, "Category is required"),
   image: z.string().min(1, "Image URL is required"),
   foodType: z.enum(["VEG", "NON_VEG", "BEVERAGE"]).default("VEG"),
