@@ -69,7 +69,7 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
               <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-[#d99a2b] shadow-brand flex-shrink-0 bg-white">
                 <img
                   src="/images/logo.png"
-                  alt="Pandit Ji Admin"
+                  alt="Panditji Restaurant Admin"
                   className="w-full h-full object-contain"
                 />
               </div>

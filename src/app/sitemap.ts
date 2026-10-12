@@ -3,7 +3,8 @@ import { connectToDatabase } from "@/lib/db/mongodb";
 import { MenuItem } from "@/models/MenuItem";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://panditjikadhaba.com";
+  const rawUrl = process.env.NEXT_PUBLIC_APP_URL;
+  const baseUrl = (rawUrl && !rawUrl.includes("localhost") ? rawUrl : "https://panditjirestaurant.com").replace(/\/$/, "");
 
   let dishes: Array<{ slug: string; updatedAt?: string | Date }> = [];
   try {
@@ -16,7 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticRoutes: MetadataRoute.Sitemap = [
     {
-      url: baseUrl,
+      url: `${baseUrl}`,
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1.0,
@@ -53,12 +54,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  const dishRoutes: MetadataRoute.Sitemap = dishes.map((dish) => ({
-    url: `${baseUrl}/menu/${dish.slug}`,
-    lastModified: dish.updatedAt ? new Date(dish.updatedAt) : new Date(),
-    changeFrequency: "weekly",
-    priority: 0.8,
-  }));
+  const dishRoutes: MetadataRoute.Sitemap = dishes
+    .filter((dish) => Boolean(dish && dish.slug))
+    .map((dish) => ({
+      url: `${baseUrl}/menu/${dish.slug}`,
+      lastModified: dish.updatedAt ? new Date(dish.updatedAt) : new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    }));
 
   return [...staticRoutes, ...dishRoutes];
 }

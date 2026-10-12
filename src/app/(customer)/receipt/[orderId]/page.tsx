@@ -1,11 +1,21 @@
 import React from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connectToDatabase } from "@/lib/db/mongodb";
-import { Order, RestaurantSettings } from "@/models";
+import { Order } from "@/models";
+import { getSettings } from "@/services/restaurant";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { ArrowLeft, Printer } from "lucide-react";
 import { PrintButton } from "./PrintButton";
+
+export const metadata: Metadata = {
+  title: "Order Receipt | Panditji Restaurant",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 interface ReceiptPageProps {
   params: Promise<{ orderId: string }>;
@@ -24,12 +34,7 @@ export default async function ReceiptPage({ params }: ReceiptPageProps) {
     notFound();
   }
 
-  const settings = (await RestaurantSettings.findOne().lean()) || {
-    restaurantName: "Pandit Ji Ka Dhaba",
-    tagline: "घर का स्वाद",
-    phone: "+91 90000 00000",
-    address: "Main Road, Bhopal, Madhya Pradesh",
-  };
+  const settings = await getSettings();
 
   return (
     <div className="bg-[#fbf7ef] min-h-screen py-10 print:py-0 print:bg-white">
@@ -53,7 +58,7 @@ export default async function ReceiptPage({ params }: ReceiptPageProps) {
             <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border-2 border-[#d99a2b] mx-auto mb-2 bg-white">
               <img
                 src="/images/logo.png"
-                alt="Pandit Ji Ka Dhaba"
+                alt="Panditji Restaurant Logo"
                 className="w-full h-full object-cover"
               />
             </div>

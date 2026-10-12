@@ -1,10 +1,20 @@
 import React from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connectToDatabase } from "@/lib/db/mongodb";
-import { Order, RestaurantSettings } from "@/models";
+import { Order } from "@/models";
+import { getSettings } from "@/services/restaurant";
 import { buildOrderWhatsAppText, buildWhatsAppUrl } from "@/lib/whatsapp/message-builder";
 import { OrderSuccessClient } from "./OrderSuccessClient";
+
+export const metadata: Metadata = {
+  title: "Order Confirmed | Panditji Restaurant",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 interface OrderSuccessPageProps {
   params: Promise<{ orderId: string }>;
@@ -23,14 +33,11 @@ export default async function OrderSuccessPage({ params }: OrderSuccessPageProps
     notFound();
   }
 
-  const settings = (await RestaurantSettings.findOne().lean()) || {
-    whatsappNumber: "919000000000",
-    whatsappOrdersEnabled: true,
-  };
+  const settings = await getSettings();
 
   const plainOrder = JSON.parse(JSON.stringify(order));
   const waMessageText = buildOrderWhatsAppText(plainOrder);
-  const waUrl = buildWhatsAppUrl(settings.whatsappNumber || "919000000000", waMessageText);
+  const waUrl = buildWhatsAppUrl(settings.whatsappNumber || "918643010994", waMessageText);
 
   return (
     <div className="bg-[#fbf7ef] min-h-screen py-16 flex items-center justify-center">

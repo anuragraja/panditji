@@ -20,15 +20,16 @@ export const fallbackCategories: ICategory[] = [
 ];
 
 export const fallbackSettings: IRestaurantSettings = {
-  restaurantName: "Pandit Ji Ka Dhaba",
+  restaurantName: "Panditji Restaurant",
   tagline: "घर का स्वाद",
   logo: "",
-  phone: "+91 90000 00000",
-  whatsappNumber: "919000000000",
+  phone: "+91 86430 10994",
+  whatsappNumber: "918643010994",
   whatsappOrdersEnabled: true,
-  email: "contact@panditjikadhaba.com",
-  address: "Main Road, Bhopal, Madhya Pradesh",
-  googleMapsUrl: "https://maps.google.com",
+  email: "contact@panditjirestaurant.com",
+  address: "Khajurikala, Bhopal, Madhya Pradesh 462022",
+  googleMapsUrl:
+    "https://www.google.com/maps/search/?api=1&query=Panditji+Restaurant+Khajurikala+Bhopal+Madhya+Pradesh+462022",
   openingHours: "11:00 AM – 11:00 PM • Every Day",
   acceptOrders: true,
   deliveryEnabled: true,
@@ -87,7 +88,17 @@ export async function getSettings(): Promise<IRestaurantSettings> {
     await connectToDatabase();
     const settings = await RestaurantSettings.findOne().lean();
     if (settings) {
-      return JSON.parse(JSON.stringify(settings));
+      const parsed = JSON.parse(JSON.stringify(settings));
+      if (!parsed.address || parsed.address.includes("Main Road")) {
+        parsed.address = "Khajurikala, Bhopal, Madhya Pradesh 462022";
+      }
+      if (!parsed.phone || parsed.phone.includes("90000") || parsed.phone.includes("6268")) {
+        parsed.phone = "+91 86430 10994";
+      }
+      if (!parsed.whatsappNumber || parsed.whatsappNumber.includes("90000") || parsed.whatsappNumber.includes("6268")) {
+        parsed.whatsappNumber = "918643010994";
+      }
+      return parsed;
     }
     return fallbackSettings;
   } catch (e) {

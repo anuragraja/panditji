@@ -26,8 +26,8 @@ export function AboutSection() {
             A Taste That Feels <span className="text-[#246b9b]">Like Home.</span>
           </h2>
           <p className="text-[#6c7b87] text-[14px] leading-[1.85] my-5">
-            Pandit Ji Ka Dhaba is built around one simple idea: serve honest Indian food with the warmth of home. Every
-            dish is prepared with familiar spices, fresh ingredients and time-tested flavours.
+            Panditji Restaurant is built around one simple idea: serve honest Indian food in Khajurikala, Bhopal with the warmth of home. Every
+            dish is prepared with familiar spices, fresh ingredients and time-tested desi flavours.
           </p>
           <div className="grid gap-[11px] text-[13px] font-bold text-[#3d5362]">
             <div className="flex items-center gap-2">

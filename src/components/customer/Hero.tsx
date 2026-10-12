@@ -24,7 +24,7 @@ export function Hero({ settings }: HeroProps) {
       }}
     >
       <div className="container-dhaba py-16 sm:py-[100px] text-white">
-        <div className="kicker">AUTHENTIC INDIAN KITCHEN</div>
+        <div className="kicker">PANDITJI RESTAURANT • KHAJURIKALA, BHOPAL</div>
 
         <h1 className="font-serif-dhaba font-extrabold text-[clamp(32px,7.5vw,76px)] leading-[1.08] my-4 sm:my-[18px] mb-5 max-w-[800px]">
           Desi Swad.<br />

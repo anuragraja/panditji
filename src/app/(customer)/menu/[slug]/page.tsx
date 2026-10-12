@@ -1,4 +1,5 @@
 import React from "react";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -7,8 +8,57 @@ import { MenuItem } from "@/models/MenuItem";
 import { formatCurrency } from "@/lib/utils";
 import { ArrowLeft, Clock } from "lucide-react";
 import { AddToCartButtonWithCustomization } from "./AddToCartClient";
+
 interface DishPageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: DishPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    await connectToDatabase();
+    const dish = await MenuItem.findOne({ slug }).lean();
+
+    if (!dish) {
+      return {
+        title: "Dish Not Found | Panditji Restaurant",
+        robots: { index: false, follow: false },
+      };
+    }
+
+    const title = `${dish.name} | Panditji Restaurant Khajurikala, Bhopal`;
+    const description = `${dish.name} at Panditji Restaurant in Khajurikala, Bhopal. ${dish.description || "Prepared hot to order with pure desi ghee and authentic spices."} Order online or dine-in.`;
+
+    return {
+      title: {
+        absolute: title,
+      },
+      description,
+      alternates: {
+        canonical: `https://panditjirestaurant.com/menu/${slug}`,
+      },
+      openGraph: {
+        title,
+        description,
+        url: `https://panditjirestaurant.com/menu/${slug}`,
+        siteName: "Panditji Restaurant",
+        type: "article",
+        images: dish.image ? [{ url: dish.image, alt: dish.name }] : [],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: dish.image ? [dish.image] : [],
+      },
+    };
+  } catch {
+    return {
+      title: "Our Menu Item | Panditji Restaurant",
+    };
+  }
 }
 
 export default async function DishDetailPage({ params }: DishPageProps) {
@@ -21,8 +71,73 @@ export default async function DishDetailPage({ params }: DishPageProps) {
     notFound();
   }
 
+  const breadcrumbsJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://panditjirestaurant.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Menu",
+        item: "https://panditjirestaurant.com/menu",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: dish.name,
+        item: `https://panditjirestaurant.com/menu/${dish.slug}`,
+      },
+    ],
+  };
+
+  const menuItemJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "MenuItem",
+    name: dish.name,
+    description: dish.description,
+    image: dish.image,
+    offers: {
+      "@type": "Offer",
+      price: dish.basePrice,
+      priceCurrency: "INR",
+      availability: dish.available
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      seller: {
+        "@type": "Restaurant",
+        name: "Panditji Restaurant",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "Khajurikala",
+          addressLocality: "Bhopal",
+          addressRegion: "Madhya Pradesh",
+          postalCode: "462022",
+          addressCountry: "IN",
+        },
+      },
+    },
+    suitableForDiet:
+      dish.foodType === "VEG"
+        ? "https://schema.org/VegetarianDiet"
+        : undefined,
+  };
+
   return (
     <div className="bg-[#fbf7ef] min-h-screen py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbsJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(menuItemJsonLd) }}
+      />
       <div className="container-dhaba max-w-4xl">
         <Link
           href="/#menu"

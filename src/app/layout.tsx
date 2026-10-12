@@ -12,31 +12,55 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Pandit Ji Ka Dhaba | घर का स्वाद — Authentic Indian Taste",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL && !process.env.NEXT_PUBLIC_APP_URL.includes("localhost")
+      ? process.env.NEXT_PUBLIC_APP_URL
+      : "https://panditjirestaurant.com"
+  ),
+  title: {
+    default: "Panditji Restaurant | Restaurant in Khajurikala, Bhopal",
+    template: "%s | Panditji Restaurant",
+  },
   description:
-    "Pandit Ji Ka Dhaba — authentic Indian food, fresh ingredients and warm hospitality. Delicious Paneer Butter Masala, Dal Tadka, Tandoori Breads, and combos.",
+    "Discover Panditji Restaurant in Khajurikala, Bhopal. Explore our menu, view food photos, check opening hours and find directions to visit us.",
+  applicationName: "Panditji Restaurant",
+  authors: [{ name: "Panditji Restaurant" }],
+  creator: "Panditji Restaurant",
+  publisher: "Panditji Restaurant",
   keywords: [
+    "Panditji Restaurant",
+    "Panditji Restaurant Bhopal",
+    "Panditji Restaurant Khajurikala",
+    "Restaurant in Khajurikala Bhopal",
     "Pandit Ji Ka Dhaba",
-    "Dhaba food",
-    "Authentic Indian Food",
-    "Ghar ka swad",
-    "Online Dhaba Order",
-    "Dal Tadka",
-    "Paneer Butter Masala",
-    "Tandoori Roti",
+    "Best restaurant in Bhopal",
+    "Authentic Indian food Bhopal",
+    "Vegetarian restaurant Bhopal",
+    "Dal Tadka Bhopal",
+    "Paneer Butter Masala Bhopal",
+    "Dhaba food Bhopal",
   ],
-  authors: [{ name: "Pandit Ji Ka Dhaba" }],
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: "Pandit Ji Ka Dhaba | घर का स्वाद",
-    description: "Authentic Indian Food, Fresh Ingredients & Warm Dhaba Hospitality.",
-    url: "https://panditjikadhaba.com",
-    siteName: "Pandit Ji Ka Dhaba",
+    title: "Panditji Restaurant | Restaurant in Khajurikala, Bhopal",
+    description:
+      "Discover Panditji Restaurant in Khajurikala, Bhopal. Explore our menu, view food photos, check opening hours and find directions to visit us.",
+    url: "https://panditjirestaurant.com",
+    siteName: "Panditji Restaurant",
     images: [
+      {
+        url: "/images/logo.png",
+        width: 800,
+        height: 800,
+        alt: "Panditji Restaurant Khajurikala Bhopal",
+      },
       {
         url: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=1200&q=80",
         width: 1200,
         height: 630,
-        alt: "Pandit Ji Ka Dhaba Food",
+        alt: "Panditji Restaurant Authentic Food",
       },
     ],
     locale: "en_IN",
@@ -44,12 +68,25 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Pandit Ji Ka Dhaba | घर का स्वाद",
-    description: "Authentic Indian dhaba food delivered fresh to your door.",
-    images: ["https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=1200&q=80"],
+    title: "Panditji Restaurant | Restaurant in Khajurikala, Bhopal",
+    description:
+      "Discover Panditji Restaurant in Khajurikala, Bhopal. Explore our menu, view food photos, check opening hours and find directions to visit us.",
+    images: ["/images/logo.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
   icons: {
     icon: "/favicon.ico",
+    apple: "/icon.png",
   },
 };
 

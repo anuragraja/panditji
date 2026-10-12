@@ -1,11 +1,21 @@
 import React from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connectToDatabase } from "@/lib/db/mongodb";
-import { Order, RestaurantSettings } from "@/models";
+import { Order } from "@/models";
+import { getSettings } from "@/services/restaurant";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { OrderStatus, OrderType } from "@/types";
 import { ArrowLeft, Check, Clock, Bike, Utensils, Home, Phone, AlertCircle } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Track Order | Panditji Restaurant",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 interface TrackOrderPageProps {
   params: Promise<{ orderId: string }>;
@@ -24,9 +34,7 @@ export default async function TrackOrderPage({ params }: TrackOrderPageProps) {
     notFound();
   }
 
-  const settings = (await RestaurantSettings.findOne().lean()) || {
-    phone: "+91 90000 00000",
-  };
+  const settings = await getSettings();
 
   const deliverySteps: { status: OrderStatus; label: string; icon: string }[] = [
     { status: "PENDING", label: "Order Placed", icon: "📝" },

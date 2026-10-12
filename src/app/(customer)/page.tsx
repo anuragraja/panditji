@@ -1,4 +1,5 @@
 import React from "react";
+import type { Metadata } from "next";
 import { Hero } from "@/components/customer/Hero";
 import { TrustStrip } from "@/components/customer/TrustStrip";
 import { MenuSection } from "@/components/customer/MenuSection";
@@ -13,6 +14,41 @@ import {
   getSettings,
   getApprovedReviews,
 } from "@/services/restaurant";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "Panditji Restaurant | Restaurant in Khajurikala, Bhopal",
+  },
+  description:
+    "Discover Panditji Restaurant in Khajurikala, Bhopal. Explore our menu, view food photos, check opening hours and find directions to visit us.",
+  alternates: {
+    canonical: "https://panditjirestaurant.com",
+  },
+  openGraph: {
+    title: "Panditji Restaurant | Restaurant in Khajurikala, Bhopal",
+    description:
+      "Discover Panditji Restaurant in Khajurikala, Bhopal. Explore our menu, view food photos, check opening hours and find directions to visit us.",
+    url: "https://panditjirestaurant.com",
+    siteName: "Panditji Restaurant",
+    locale: "en_IN",
+    type: "website",
+    images: [
+      {
+        url: "/images/logo.png",
+        width: 800,
+        height: 800,
+        alt: "Panditji Restaurant Khajurikala Bhopal",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Panditji Restaurant | Restaurant in Khajurikala, Bhopal",
+    description:
+      "Discover Panditji Restaurant in Khajurikala, Bhopal. Explore our menu, view food photos, check opening hours and find directions to visit us.",
+    images: ["/images/logo.png"],
+  },
+};
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

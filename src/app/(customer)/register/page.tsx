@@ -63,7 +63,7 @@ function RegisterForm() {
             <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#d99a2b] mx-auto mb-3 shadow-brand bg-white">
               <img
                 src="/images/logo.png"
-                alt="Pandit Ji Ka Dhaba"
+                alt="Panditji Restaurant Logo"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -71,7 +71,7 @@ function RegisterForm() {
               Create Your Account
             </h1>
             <p className="text-xs text-[#6c7b87] mt-1">
-              Join Pandit Ji Ka Dhaba for quick checkout, saved addresses, and live order tracking.
+              Join Panditji Restaurant for quick checkout, saved addresses, and live order tracking.
             </p>
           </div>
 

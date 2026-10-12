@@ -1,7 +1,15 @@
 import React from "react";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Terms & Conditions | Pandit Ji Ka Dhaba",
+export const metadata: Metadata = {
+  title: {
+    absolute: "Terms of Service | Panditji Restaurant",
+  },
+  description:
+    "Terms of service, dining conditions, and food delivery policies for Panditji Restaurant in Khajurikala, Bhopal.",
+  alternates: {
+    canonical: "https://panditjirestaurant.com/terms",
+  },
 };
 
 export default function TermsPage() {

@@ -1,7 +1,15 @@
 import React from "react";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Privacy Policy | Pandit Ji Ka Dhaba",
+export const metadata: Metadata = {
+  title: {
+    absolute: "Privacy Policy | Panditji Restaurant",
+  },
+  description:
+    "Privacy Policy for Panditji Restaurant in Khajurikala, Bhopal. Learn how we handle customer data, online food orders, and reservations responsibly.",
+  alternates: {
+    canonical: "https://panditjirestaurant.com/privacy",
+  },
 };
 
 export default function PrivacyPolicyPage() {
@@ -16,7 +24,7 @@ export default function PrivacyPolicyPage() {
         <section className="space-y-3 text-xs text-[#526575] leading-relaxed">
           <h2 className="font-bold text-sm text-[#102a43]">1. Information We Collect</h2>
           <p>
-            When you place an order or book a table with Pandit Ji Ka Dhaba, we collect your name, phone number, delivery address, and optionally email to process your food delivery and customer support communications.
+            When you place an order or book a table with Panditji Restaurant, we collect your name, phone number, delivery address, and optionally email to process your food delivery and customer support communications.
           </p>
 
           <h2 className="font-bold text-sm text-[#102a43]">2. Use of WhatsApp</h2>
@@ -31,7 +39,7 @@ export default function PrivacyPolicyPage() {
 
           <h2 className="font-bold text-sm text-[#102a43]">4. Contact Us</h2>
           <p>
-            If you have questions about your personal data, please contact us at support@panditjikadhaba.com.
+            If you have questions about your personal data, please contact us at contact@panditjirestaurant.com.
           </p>
         </section>
       </div>

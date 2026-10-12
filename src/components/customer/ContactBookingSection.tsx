@@ -28,11 +28,23 @@ export function ContactBookingSection({ settings }: ContactBookingSectionProps) 
   const [errorMsg, setErrorMsg] = useState("");
 
   const restaurantAddress =
-    settings?.address || "Main Road, Bhopal, Madhya Pradesh";
-  const restaurantPhone = settings?.phone || "+91 90000 00000";
+    settings?.address && !settings.address.includes("Main Road")
+      ? settings.address
+      : "Khajurikala, Bhopal, Madhya Pradesh 462022";
+  const restaurantPhone =
+    settings?.phone && !settings.phone.includes("90000") && !settings.phone.includes("6268")
+      ? settings.phone
+      : "+91 86430 10994";
   const restaurantHours =
     settings?.openingHours || "11:00 AM – 11:00 PM • Every Day";
-  const whatsappNumber = settings?.whatsappNumber || "919000000000";
+  const whatsappNumber =
+    settings?.whatsappNumber && !settings.whatsappNumber.includes("90000") && !settings.whatsappNumber.includes("6268")
+      ? settings.whatsappNumber
+      : "918643010994";
+  const mapsUrl =
+    settings?.googleMapsUrl && !settings.googleMapsUrl.endsWith("maps.google.com")
+      ? settings.googleMapsUrl
+      : "https://www.google.com/maps/search/?api=1&query=Panditji+Restaurant+Khajurikala+Bhopal+Madhya+Pradesh+462022";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +65,7 @@ export function ContactBookingSection({ settings }: ContactBookingSectionProps) 
 
       // Generate WhatsApp booking URL
       const bookingText = [
-        "🍛 *PANDIT JI KA DHABA*",
+        "🍛 *PANDITJI RESTAURANT*",
         "_Table Reservation Request_",
         "",
         `*Name:* ${formData.name}`,
@@ -111,9 +123,14 @@ export function ContactBookingSection({ settings }: ContactBookingSectionProps) 
               <span className="text-xl sm:text-[20px] select-none shrink-0">📍</span>
               <div>
                 <b className="block text-xs sm:text-[13px] font-bold text-white">Address</b>
-                <span className="block text-[#b8c7d0] text-[11px] sm:text-[12px] mt-0.5 sm:mt-[3px]">
-                  {restaurantAddress}
-                </span>
+                <a
+                  href={mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-[#b8c7d0] hover:text-[#f5d28d] transition-colors text-[11px] sm:text-[12px] mt-0.5 sm:mt-[3px]"
+                >
+                  {restaurantAddress} <span className="text-[#f5d28d] font-bold">(Get Directions ↗)</span>
+                </a>
               </div>
             </div>
 
@@ -121,9 +138,12 @@ export function ContactBookingSection({ settings }: ContactBookingSectionProps) 
               <span className="text-xl sm:text-[20px] select-none shrink-0">📞</span>
               <div>
                 <b className="block text-xs sm:text-[13px] font-bold text-white">Call Us</b>
-                <span className="block text-[#b8c7d0] text-[11px] sm:text-[12px] mt-0.5 sm:mt-[3px]">
+                <a
+                  href={`tel:${restaurantPhone.replace(/\s+/g, "")}`}
+                  className="block text-[#b8c7d0] hover:text-[#f5d28d] transition-colors text-[11px] sm:text-[12px] mt-0.5 sm:mt-[3px]"
+                >
                   {restaurantPhone}
-                </span>
+                </a>
               </div>
             </div>
 

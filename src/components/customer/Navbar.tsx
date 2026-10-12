@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { ShoppingBag, User as UserIcon, Menu as MenuIcon, X } from "lucide-react";
@@ -15,25 +16,28 @@ export function Navbar() {
     <header className="sticky top-0 z-40 bg-[#fffdf9]/95 backdrop-blur-md border-b border-[#e9e1d4]">
       <div className="container-dhaba h-[78px] flex items-center justify-between gap-6">
         <Link href="/" className="flex items-center gap-3 text-[#102a43] group">
-          <div className="w-[54px] h-[54px] rounded-full overflow-hidden border-2 border-[#d99a2b] shadow-brand transition-transform group-hover:scale-105 flex-shrink-0 bg-white">
-            <img
+          <div className="w-[54px] h-[54px] rounded-full overflow-hidden border-2 border-[#d99a2b] shadow-brand transition-transform group-hover:scale-105 flex-shrink-0 bg-white relative">
+            <Image
               src="/images/logo.png"
-              alt="Pandit Ji Ka Dhaba Logo"
+              alt="Panditji Restaurant Logo"
+              width={54}
+              height={54}
+              priority
               className="w-full h-full object-contain"
             />
           </div>
           <div className="flex flex-col">
             <span className="font-serif-dhaba font-extrabold text-[19px] leading-tight text-[#102a43]">
-              Pandit Ji
+              Panditji
             </span>
             <span className="text-[8px] font-extrabold tracking-[3px] text-[#d99a2b] uppercase">
-              KA DHABA
+              RESTAURANT
             </span>
           </div>
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-7">
+        <nav aria-label="Main Navigation" className="hidden md:flex items-center gap-7">
           <Link
             href="/"
             className="text-[13px] font-bold text-[#526575] hover:text-[#102a43] transition-colors"
@@ -41,13 +45,13 @@ export function Navbar() {
             Home
           </Link>
           <Link
-            href="/#menu"
+            href="/menu"
             className="text-[13px] font-bold text-[#526575] hover:text-[#102a43] transition-colors"
           >
             Menu
           </Link>
           <Link
-            href="/#about"
+            href="/about"
             className="text-[13px] font-bold text-[#526575] hover:text-[#102a43] transition-colors"
           >
             Our Story
@@ -65,7 +69,7 @@ export function Navbar() {
             Reviews
           </Link>
           <Link
-            href="/#contact"
+            href="/contact"
             className="text-[13px] font-bold text-[#526575] hover:text-[#102a43] transition-colors"
           >
             Contact
@@ -127,14 +131,14 @@ export function Navbar() {
             Home
           </Link>
           <Link
-            href="/#menu"
+            href="/menu"
             onClick={() => setMobileOpen(false)}
             className="text-sm font-bold text-[#172b3a] py-1 border-b border-[#e9e1d4]/40"
           >
             Menu
           </Link>
           <Link
-            href="/#about"
+            href="/about"
             onClick={() => setMobileOpen(false)}
             className="text-sm font-bold text-[#172b3a] py-1 border-b border-[#e9e1d4]/40"
           >
@@ -155,7 +159,7 @@ export function Navbar() {
             Reviews
           </Link>
           <Link
-            href="/#contact"
+            href="/contact"
             onClick={() => setMobileOpen(false)}
             className="text-sm font-bold text-[#172b3a] py-1 border-b border-[#e9e1d4]/40"
           >

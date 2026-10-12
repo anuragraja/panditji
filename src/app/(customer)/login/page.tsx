@@ -78,7 +78,7 @@ function LoginForm() {
             <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#d99a2b] mx-auto mb-3 shadow-brand bg-white">
               <img
                 src="/images/logo.png"
-                alt="Pandit Ji Ka Dhaba"
+                alt="Panditji Restaurant Logo"
                 className="w-full h-full object-cover"
               />
             </div>

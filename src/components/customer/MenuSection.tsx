@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { IMenuItem, ICategory } from "@/types";
 import { formatCurrency } from "@/lib/utils";
 import { useCart } from "@/context/CartContext";
@@ -172,7 +173,15 @@ export function MenuSection({ initialDishes, categories }: MenuSectionProps) {
 
                   <div className="food-info pt-[13px] px-[3px] pb-[4px]">
                     <h3 className="font-serif-dhaba font-bold text-[21px] text-[#102a43] leading-snug group-hover:text-[#246b9b] transition-colors">
-                      {dish.name}
+                      <Link
+                        href={`/menu/${dish.slug}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                        className="hover:underline"
+                      >
+                        {dish.name}
+                      </Link>
                     </h3>
                     {dish.hindiName && (
                       <span className="text-[11px] text-[#9a6714] font-medium block">

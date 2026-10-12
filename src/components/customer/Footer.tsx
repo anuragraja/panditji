@@ -1,42 +1,49 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export function Footer() {
   return (
     <footer className="bg-[#091d2d] text-[#c4d0d7] pb-20 md:pb-0">
       <div className="container-dhaba py-7 sm:py-[30px] flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
         <Link href="/" className="flex items-center gap-3 text-white">
-          <div className="w-12 h-12 sm:w-[52px] sm:h-[52px] rounded-full overflow-hidden border-2 border-[#d99a2b] shadow-brand flex-shrink-0 bg-white">
-            <img
+          <div className="w-12 h-12 sm:w-[52px] sm:h-[52px] rounded-full overflow-hidden border-2 border-[#d99a2b] shadow-brand flex-shrink-0 bg-white relative">
+            <Image
               src="/images/logo.png"
-              alt="Pandit Ji Ka Dhaba Logo"
+              alt="Panditji Restaurant Logo"
+              width={52}
+              height={52}
               className="w-full h-full object-contain"
             />
           </div>
           <div className="flex flex-col">
             <span className="font-serif-dhaba font-extrabold text-[19px] leading-tight text-white">
-              Pandit Ji
+              Panditji
             </span>
             <span className="text-[8px] font-extrabold tracking-[3px] text-[#d99a2b] uppercase">
-              KA DHABA
+              RESTAURANT
             </span>
           </div>
         </Link>
 
         <p className="text-xs text-[#93a4ae]">
-          Authentic Indian flavours. Fresh food. Warm hospitality.
+          Authentic Indian flavours in Khajurikala, Bhopal. Fresh food & warm hospitality.
         </p>
 
-        <div className="text-xs text-[#d5e0e6] flex flex-wrap items-center gap-x-3 gap-y-1.5">
+        <nav aria-label="Footer Navigation" className="text-xs text-[#d5e0e6] flex flex-wrap items-center gap-x-3 gap-y-1.5">
           <Link href="/" className="hover:text-white transition-colors">
             Home
           </Link>
           <span>•</span>
-          <Link href="/#menu" className="hover:text-white transition-colors">
+          <Link href="/menu" className="hover:text-white transition-colors">
             Menu
           </Link>
           <span>•</span>
-          <Link href="/#contact" className="hover:text-white transition-colors">
+          <Link href="/about" className="hover:text-white transition-colors">
+            About Us
+          </Link>
+          <span>•</span>
+          <Link href="/contact" className="hover:text-white transition-colors">
             Contact
           </Link>
           <span>•</span>
@@ -47,11 +54,11 @@ export function Footer() {
           <Link href="/terms" className="hover:text-white transition-colors">
             Terms
           </Link>
-        </div>
+        </nav>
       </div>
 
       <div className="text-center border-t border-white/[0.08] py-4 text-[10px] text-[#81929d] px-4">
-        © {new Date().getFullYear()} Pandit Ji Ka Dhaba • All rights reserved. • घर का स्वाद
+        © {new Date().getFullYear()} Panditji Restaurant • Khajurikala, Bhopal, Madhya Pradesh 462022 • All rights reserved. • घर का स्वाद
       </div>
     </footer>
   );
